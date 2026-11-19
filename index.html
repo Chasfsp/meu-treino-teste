@@ -1,0 +1,1972 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Meu Treino</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#101010">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#F2F2F2; --hdr:rgba(242,242,242,.92); --panel:#FFFFFF; --panel2:#F0F0F0; --hero:linear-gradient(135deg,#FFFFFF,#F6F1EE);
+  --line:#E0E0E0; --text:#161616; --muted:#666666; --orange:#E35F00; --on-orange:#FFFFFF; --peach:#B14E1C; --tile:#FCE3D3; --pill-bg:#FBE6D9;
+  --green:#1F8A57; --red:#C2392F; --input:#FAFAFA; --input-line:#CFCFCF; --done-bg:#E2F3E9; --done-line:#2F9E64; --done-text:#18663F; --lock-bg:#E9F5EE;
+  --f:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#101010; --hdr:rgba(17,17,17,.92); --panel:#1D1D1D; --panel2:#272727; --hero:linear-gradient(135deg,#292929,#1B1B1B);
+    --line:#353535; --text:#F4F4F4; --muted:#A9A9A9; --orange:#FF6900; --on-orange:#1A1009; --peach:#F5A486; --tile:#3A2418; --pill-bg:#3B281E;
+    --green:#46C78A; --red:#FF7777; --input:#111111; --input-line:#454545; --done-bg:#254B37; --done-line:#43B879; --done-text:#A9EFC5; --lock-bg:#1D3328;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#101010; --hdr:rgba(17,17,17,.92); --panel:#1D1D1D; --panel2:#272727; --hero:linear-gradient(135deg,#292929,#1B1B1B);
+  --line:#353535; --text:#F4F4F4; --muted:#A9A9A9; --orange:#FF6900; --on-orange:#1A1009; --peach:#F5A486; --tile:#3A2418; --pill-bg:#3B281E;
+  --green:#46C78A; --red:#FF7777; --input:#111111; --input-line:#454545; --done-bg:#254B37; --done-line:#43B879; --done-text:#A9EFC5; --lock-bg:#1D3328;
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+*,*::before,*::after{ box-sizing:inherit; }
+html{ scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px); -webkit-text-size-adjust:100%; }
+body{ margin:0; background:var(--bg); color:var(--text); font:15px/1.45 var(--f); }
+body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--hdr); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+button,input,select,textarea{ font:inherit; color:inherit; }
+button{ cursor:pointer; border:0; background:none; -webkit-tap-highlight-color:transparent; }
+a{ color:var(--peach); }
+:focus-visible{ outline:2px solid var(--orange); outline-offset:2px; }
+[hidden]{ display:none !important; }
+
+.app{ max-width:1120px; margin:0 auto; padding-bottom:calc(96px + env(safe-area-inset-bottom,0px)); }
+body.foco .app{ padding-bottom:160px; }
+.top{ position:sticky; top:env(safe-area-inset-top,0px); z-index:5; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:16px 18px 12px; background:var(--hdr); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }
+.brand{ font-weight:850; letter-spacing:.08em; font-size:19px; }
+.brand span{ color:var(--orange); }
+.eyebrow{ font-size:11px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; }
+.content{ padding:18px; }
+
+.hero{ background:var(--hero); border:1px solid var(--line); border-radius:22px; padding:20px; margin-bottom:14px; }
+.hero h1{ font-size:29px; line-height:1.12; margin:7px 0; font-weight:800; }
+.hero p{ color:var(--muted); margin:0 0 16px; }
+.btn{ background:var(--orange); color:var(--on-orange); font-weight:750; border-radius:13px; padding:12px 16px; min-height:46px; }
+.btn.secondary{ background:var(--panel2); color:var(--text); border:1px solid var(--line); }
+.btn.ghost{ background:transparent; border:1px solid var(--line); color:var(--text); }
+.btn.small{ padding:8px 12px; font-size:13px; min-height:38px; }
+.btn.full{ width:100%; }
+.btn:disabled{ opacity:.45; cursor:default; }
+.lnk{ color:var(--peach); text-decoration:underline; text-underline-offset:3px; font-weight:600; min-height:40px; padding:0 2px; }
+.lnk.perigo{ color:var(--red); }
+.row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.between{ justify-content:space-between; }
+.grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.card{ background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:15px; margin-bottom:12px; }
+.grid > .card{ margin-bottom:0; }
+.stat{ font-size:25px; font-weight:800; margin:4px 0; font-variant-numeric:tabular-nums; }
+.muted{ color:var(--muted); }
+.smalltxt{ font-size:12px; color:var(--muted); }
+h2{ font-size:21px; margin:8px 0 14px; font-weight:750; }
+h3{ font-size:16px; margin:0 0 7px; font-weight:700; }
+p{ margin:0 0 8px; }
+.sectionhead{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:22px 0 10px; }
+.sectionhead h2{ margin:0; }
+.pill{ display:inline-flex; align-items:center; background:var(--pill-bg); color:var(--peach); padding:5px 9px; border-radius:99px; font-size:11px; font-weight:700; }
+.pill.ok{ background:var(--done-bg); color:var(--done-text); }
+.alerta{ font-size:13px; border-left:3px solid var(--orange); padding:6px 10px; margin:12px 0 0; background:var(--panel2); border-radius:0 8px 8px 0; }
+.aviso{ font-size:12px; color:var(--muted); border-left:3px solid var(--red); padding:4px 10px; margin:8px 0; }
+
+.workout{ display:flex; align-items:center; gap:12px; }
+.letter{ width:46px; height:46px; display:grid; place-items:center; border-radius:14px; background:var(--tile); color:var(--peach); font-weight:900; font-size:20px; flex-shrink:0; }
+.workout-info{ flex:1; min-width:0; }
+.workout-info strong{ display:block; }
+.feito-em{ color:var(--green); font-size:12px; font-weight:700; margin-top:5px; }
+details.lista-ex{ margin-top:10px; font-size:14px; }
+details.lista-ex summary{ color:var(--peach); cursor:pointer; font-weight:600; min-height:32px; display:flex; align-items:center; }
+details.lista-ex ul{ list-style:none; padding:0; margin:6px 0 0; }
+details.lista-ex li{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-top:1px solid var(--line); }
+details.lista-ex li span:last-child{ color:var(--muted); white-space:nowrap; }
+.shortcut{ display:block; width:100%; text-align:left; color:var(--text); }
+.shortcut .ico{ font-size:24px; line-height:1.2; margin-bottom:4px; }
+
+.progress{ height:7px; background:var(--panel2); border-radius:20px; overflow:hidden; }
+.progress span{ display:block; height:100%; background:var(--orange); width:0; transition:width .3s ease; }
+.progress span.cheio{ background:var(--green); }
+.barras{ display:grid; gap:9px; margin-top:10px; }
+.barra-g{ display:grid; grid-template-columns:120px 1fr 32px; gap:10px; align-items:center; font-size:13px; }
+.barra-g .bg-val{ font-weight:700; text-align:right; font-variant-numeric:tabular-nums; }
+
+/* sessão */
+.exercise{ padding:15px; background:var(--panel); border:1px solid var(--line); border-radius:17px; margin:11px 0; }
+.exercise.done{ border-color:var(--done-line); }
+.ex-cab{ display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
+.exercise-title{ font-weight:750; font-size:16px; }
+.ex-cont{ font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums; }
+.exercise.done .ex-cont{ color:var(--done-text); }
+.exercise-meta{ font-size:12px; color:var(--muted); margin:3px 0 8px; }
+.exercise-details{ font-size:13px; color:var(--muted); margin:0 0 8px; }
+.ultima{ font-size:13px; background:var(--panel2); border-radius:9px; padding:6px 10px; margin:0 0 6px; }
+.sug{ font-size:13px; border-left:3px solid var(--line); padding:3px 10px; margin:0 0 10px; }
+.sug-subir{ border-color:var(--green); }
+.sug-reduzir{ border-color:var(--red); }
+.setcab,.setrow{ display:grid; grid-template-columns:30px minmax(0,1fr) minmax(0,1fr) auto auto; gap:6px; align-items:center; }
+.setcab{ font-size:11px; color:var(--muted); }
+.setrow{ margin:6px 0; }
+.setrow .sn{ font-size:12px; color:var(--muted); font-weight:700; }
+.setrow input{ width:100%; min-width:0; min-height:44px; background:var(--input); border:1px solid var(--input-line); border-radius:9px; padding:8px; text-align:center; font-size:17px; font-weight:700; font-variant-numeric:tabular-nums; }
+.setrow input:focus{ border-color:var(--orange); outline:none; }
+.setrow input.locked{ background:var(--lock-bg); border-color:var(--done-line); color:var(--done-text); }
+.set-rest{ background:var(--tile); color:var(--peach); border:1px solid transparent; border-radius:9px; padding:0 9px; min-height:44px; font-size:12px; font-weight:700; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.validate-set{ background:var(--panel2); color:var(--muted); border:1px solid var(--line); border-radius:9px; min-width:46px; min-height:44px; font-size:18px; font-weight:800; }
+.validate-set[aria-pressed="true"]{ background:var(--done-bg); color:var(--done-text); border-color:var(--done-line); }
+.add-set{ background:transparent; color:var(--peach); border:1px dashed var(--peach); border-radius:10px; padding:9px 12px; font-weight:800; min-height:42px; margin-top:4px; }
+.rf{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:10px; font-size:12px; color:var(--muted); }
+.rf button{ min-width:40px; min-height:36px; border-radius:9px; border:1px solid var(--line); background:var(--panel2); font-weight:700; color:var(--text); }
+.rf button[aria-pressed="true"]{ background:var(--orange); color:var(--on-orange); border-color:transparent; }
+.complete-exercise{ width:100%; margin-top:10px; min-height:42px; border:1px solid var(--line); border-radius:9px; background:var(--panel2); font-weight:650; }
+.complete-exercise.done{ background:var(--done-bg); border-color:var(--done-line); color:var(--done-text); }
+.commentbox{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); }
+.commentbox textarea,.field input,.field select,.field textarea,.search{ width:100%; background:var(--input); border:1px solid var(--input-line); border-radius:10px; padding:10px; min-height:44px; outline:none; font-size:16px; }
+.commentbox textarea:focus,.field input:focus,.field select:focus,.field textarea:focus,.search:focus{ border-color:var(--orange); }
+.fala{ display:flex; align-items:center; gap:8px; margin-top:6px; }
+.fala button{ color:var(--peach); font-weight:700; font-size:13px; min-height:36px; padding:0 4px; }
+.fala button[aria-pressed="true"]{ color:var(--red); }
+.complete-session{ width:100%; min-height:48px; margin-top:14px; border:1px solid var(--orange); border-radius:9px; background:transparent; color:var(--peach); font-weight:750; }
+.complete-session.done{ background:var(--done-bg); border-color:var(--done-line); color:var(--done-text); }
+.fields{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+.field{ display:block; }
+.field label,.field > span{ display:block; color:var(--muted); font-size:11px; margin:0 0 5px; }
+.field.larga{ grid-column:1 / -1; }
+.bloqueado{ opacity:.5; pointer-events:none; }
+.timer{ font-size:40px; font-weight:800; font-variant-numeric:tabular-nums; }
+.timer-card{ margin-top:12px; background:var(--panel2); text-align:center; border-radius:14px; padding:16px; }
+.timer-card[data-fase="forte"]{ box-shadow:inset 0 4px 0 var(--orange); }
+.esforco{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+.esforco button{ min-height:46px; border-radius:10px; border:1px solid var(--line); background:var(--panel2); font-weight:650; font-size:13px; }
+.esforco button[aria-pressed="true"]{ background:var(--orange); color:var(--on-orange); border-color:transparent; }
+
+/* histórico e calendário */
+details.hist summary{ cursor:pointer; list-style:none; }
+details.hist summary::-webkit-details-marker{ display:none; }
+details.hist[open] summary strong{ color:var(--peach); }
+.hist-ex{ padding:10px 0; border-top:1px solid var(--line); font-size:14px; }
+.hist-ex em{ display:block; font-style:normal; color:var(--red); font-size:13px; }
+.cal{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-top:14px; }
+.calhead{ color:var(--muted); text-align:center; font-size:10px; padding:5px 0; }
+.calcell{ position:relative; border-radius:10px; background:var(--panel2); border:1px solid var(--line); padding:8px 2px 12px; font-size:12px; min-height:40px; }
+.calcell.vazio{ visibility:hidden; }
+.calcell.today{ border-color:var(--orange); }
+.calcell.selected{ background:var(--tile); border-color:var(--orange); }
+.calcell.has-event::after{ content:""; position:absolute; bottom:4px; left:50%; transform:translateX(-50%); width:5px; height:5px; border-radius:50%; background:var(--green); }
+
+/* gráficos */
+.chart{ display:flex; align-items:flex-end; gap:9px; height:130px; padding:10px 4px 0; }
+.barwrap{ flex:1; text-align:center; min-width:0; }
+.bar{ background:var(--orange); border-radius:7px 7px 2px 2px; min-height:4px; }
+.barlabel{ font-size:10px; color:var(--muted); margin-top:5px; font-variant-numeric:tabular-nums; }
+.graf{ width:100%; height:auto; display:block; margin:8px 0; }
+.graf .eixo{ stroke:var(--line); stroke-width:1; }
+.graf .ln{ fill:none; stroke:var(--orange); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
+.graf .pt{ fill:var(--panel); stroke:var(--orange); stroke-width:2; }
+.graf .tx{ fill:var(--muted); font:500 11px var(--f); }
+.linha-info{ display:flex; justify-content:space-between; gap:10px; padding:4px 0; }
+
+/* assistente */
+.ia{ white-space:pre-wrap; font-size:15px; line-height:1.55; background:var(--panel2); border-radius:12px; padding:12px; margin-top:12px; }
+.ia:empty{ display:none; }
+.seg{ display:inline-grid; grid-template-columns:1fr 1fr; gap:4px; background:var(--panel2); border-radius:11px; padding:3px; }
+.seg button{ min-height:36px; padding:0 14px; border-radius:9px; font-weight:650; font-size:13px; color:var(--muted); }
+.seg button[aria-pressed="true"]{ background:var(--orange); color:var(--on-orange); }
+
+/* cabeçalho com voltar */
+.top .voltar{ display:inline-flex; align-items:center; gap:4px; color:var(--orange); font-weight:700; font-size:15px; min-height:40px; padding:0 4px; }
+.top .titulo{ position:absolute; left:50%; transform:translateX(-50%); font-weight:750; font-size:15px; white-space:nowrap; max-width:48%; overflow:hidden; text-overflow:ellipsis; }
+.top .info{ font-size:12px; color:var(--muted); white-space:nowrap; }
+/* exercício: foto, vídeo, sugestões, dificuldade */
+.ex-topo{ display:flex; gap:10px; }
+.foto{ width:64px; height:64px; flex-shrink:0; border-radius:10px; border:1px dashed var(--input-line); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:var(--muted); font-size:11px; overflow:hidden; cursor:pointer; background:var(--panel2); padding:0; }
+.foto img{ width:100%; height:100%; object-fit:cover; display:block; }
+.foto.tem{ border-style:solid; border-color:var(--line); }
+.foto svg{ width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linejoin:round; }
+.ex-info{ flex:1; min-width:0; }
+.btn-video{ display:inline-flex; align-items:center; gap:5px; margin-top:6px; font-size:12px; font-weight:650; color:var(--text); border:1px solid var(--line); border-radius:9px; padding:6px 10px; text-decoration:none; min-height:32px; }
+.nota-ini{ font-size:12px; color:var(--muted); background:var(--panel2); border-radius:9px; padding:6px 9px; margin:10px 0 0; }
+.setrow input.sug{ border-style:dashed; color:var(--muted); font-weight:500; }
+.acoes-serie{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:6px; }
+.acoes-serie .add-set{ margin-top:0; }
+.validar-todas{ border:1px solid var(--line); border-radius:10px; background:var(--panel2); font-weight:650; min-height:42px; font-size:13px; }
+.dif-bloco{ border-top:1px solid var(--line); margin-top:12px; padding-top:10px; }
+.dif{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+.dif button{ min-height:42px; border-radius:9px; border:1px solid var(--line); background:var(--panel2); font-weight:650; font-size:14px; }
+.dif button[aria-pressed="true"]{ background:var(--orange); color:var(--on-orange); border-color:transparent; }
+.enviado{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:12px; font-size:13px; background:var(--done-bg); color:var(--done-text); border-radius:9px; padding:8px 10px; }
+.enviado button{ color:inherit; text-decoration:underline; font-size:13px; font-weight:600; min-height:32px; flex-shrink:0; }
+/* começar do zero */
+.opcao{ display:block; width:100%; text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; margin-top:8px; }
+.opcao[aria-pressed="true"]{ border:2px solid var(--orange); padding:13px; }
+.op-cab{ display:flex; align-items:center; gap:10px; }
+.op-nome{ flex:1; font-weight:750; font-size:16px; }
+.radio{ width:20px; height:20px; border-radius:50%; border:2px solid var(--input-line); flex-shrink:0; }
+.opcao[aria-pressed="true"] .radio{ border-color:var(--orange); background:var(--orange); box-shadow:inset 0 0 0 3px var(--panel); }
+.aviso-arq{ display:flex; gap:8px; font-size:12px; color:var(--muted); background:var(--panel2); border-radius:10px; padding:9px 10px; margin-top:12px; }
+.foto-grande{ width:100%; max-height:60vh; object-fit:contain; border-radius:12px; background:var(--panel2); display:block; }
+
+/* navegação inferior */
+.bottom{ position:fixed; bottom:0; left:0; right:0; z-index:10; display:flex; justify-content:center; background:var(--hdr); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-top:1px solid var(--line); }
+.nav{ width:min(100%,700px); display:flex; justify-content:space-around; padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px)); }
+.nav button{ color:var(--muted); padding:6px 8px; border-radius:14px; min-width:62px; font-size:11px; font-weight:600; display:grid; justify-items:center; gap:2px; }
+.nav button svg{ width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.nav button.active{ color:var(--orange); background:var(--tile); }
+
+/* descanso, modais, avisos */
+#timer{ position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--panel); border-top:2px solid var(--orange); padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); box-shadow:0 -10px 30px rgba(0,0,0,.25); }
+.t-in{ max-width:700px; margin:0 auto; display:grid; grid-template-columns:1fr auto; gap:6px 12px; align-items:center; }
+.t-rot{ font-size:12px; color:var(--muted); margin:0; text-transform:uppercase; letter-spacing:.1em; }
+.t-tempo{ font-size:40px; font-weight:800; line-height:1; margin:2px 0 0; font-variant-numeric:tabular-nums; }
+.t-btns{ display:flex; gap:6px; }
+.tb{ min-height:44px; min-width:52px; padding:0 10px; border-radius:10px; background:var(--panel2); border:1px solid var(--line); font-weight:700; }
+.t-barra{ grid-column:1 / -1; height:6px; border-radius:3px; background:var(--panel2); overflow:hidden; }
+.t-fill{ height:100%; width:100%; background:var(--orange); transform-origin:left; }
+#timer.acabou .t-tempo{ color:var(--green); }
+.modal{ position:fixed; inset:0; z-index:40; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; padding:20px; }
+.modalbox{ width:min(100%,420px); background:var(--panel); border:1px solid var(--line); border-radius:22px; padding:24px; text-align:center; box-shadow:0 15px 50px rgba(0,0,0,.4); }
+.modalbox ul{ text-align:left; margin:10px 0 0; padding-left:20px; }
+#toast{ position:fixed; bottom:calc(96px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%); background:var(--text); color:var(--bg); padding:10px 16px; border-radius:12px; z-index:50; box-shadow:0 5px 20px rgba(0,0,0,.3); max-width:calc(100% - 32px); opacity:0; pointer-events:none; transition:opacity .2s ease; font-weight:600; }
+#toast.on{ opacity:1; }
+body.foco #toast{ bottom:calc(130px + env(safe-area-inset-bottom,0px)); }
+
+@media (min-width:760px){
+  .content{ padding:25px 28px; }
+  .hero{ padding:28px; }
+  .hero h1{ font-size:36px; }
+  .grid.stats{ grid-template-columns:repeat(4,1fr); }
+  .exercise-list{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .exercise{ margin:0; }
+}
+@media (max-width:390px){
+  .content{ padding:13px; }
+  .hero h1{ font-size:25px; }
+  .setcab,.setrow{ grid-template-columns:24px minmax(0,1fr) minmax(0,1fr) auto auto; gap:5px; }
+  .set-rest{ padding:0 6px; }
+  .barra-g{ grid-template-columns:100px 1fr 30px; }
+}
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top" id="top"></header>
+  <main class="content" id="app"></main>
+</div>
+<nav class="bottom" id="nav" aria-label="Seções do app"><div class="nav">
+  <button data-go="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg>Início</button>
+  <button data-go="workouts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6v12M17.5 6v12M3 9v6M21 9v6M6.5 12h11"/></svg>Treinos</button>
+  <button data-go="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>Evolução</button>
+  <button data-go="library"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H20v15H5.5A1.5 1.5 0 0 0 4 19.5zM4 19.5A1.5 1.5 0 0 0 5.5 21H20"/></svg>Biblioteca</button>
+  <button data-go="profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Perfil</button>
+</div></nav>
+<div id="timer" hidden>
+  <div class="t-in">
+    <div><p class="t-rot" id="t-rot">Descanso</p><p class="t-tempo" id="t-tempo">0:00</p></div>
+    <div class="t-btns"><button class="tb" data-t="-15" aria-label="Menos 15 segundos">−15</button><button class="tb" data-t="15" aria-label="Mais 15 segundos">+15</button><button class="tb" data-t="x">Pular</button></div>
+    <div class="t-barra"><div class="t-fill" id="t-fill"></div></div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* ================= Programas (dados, não código) ================= */
+const VERSAO_APP = '4.1';
+/* o mesmo arquivo serve ao endereço oficial e ao de teste: cada um usa o seu banco */
+const AMBIENTES = {
+  producao: { url: 'https://gspcitfcvypdchovnhve.supabase.co', chave: 'sb_publishable_VkL080hE9jt4hm_mdt4-Bg_0S3CXDV4' },
+  teste: { url: 'https://vqbwtscllinedzpezerg.supabase.co', chave: 'sb_publishable_h93H5gK-X-_0046p705yBw_o_fJg16O' } /* projeto de testes (Ohio) */
+};
+const AMBIENTE = /\/meu-treino-teste(\/|$)/.test(location.pathname) ? 'teste' : 'producao';
+const SUPA_URL = AMBIENTES[AMBIENTE].url;
+const SUPA_CHAVE = AMBIENTES[AMBIENTE].chave;
+const VERSAO_TERMOS = '0.2';
+const PROGRAMAS = {
+  principal: {
+    versao: '2.0', nome: 'Superior e inferior', dias: 4, duracao: 'cerca de 55 min', resumo: 'Segunda, terça, quarta e fim de semana. Cada músculo 2× por semana.', ordem: ['A', 'B', 'C', 'D'],
+    treinos: {
+      A: { nome: 'Superior 1', dia: 'Segunda', regiao: 'sup', desc: 'Peito, costas, ombros e braços, alternando empurrar e puxar.', ex: ['supino_inclinado', 'puxada_neutra', 'crucifixo', 'remada_baixa', 'elevacao_lateral', 'triceps_corda', 'rosca_maquina'] },
+      B: { nome: 'Inferior 1', dia: 'Terça', regiao: 'inf', desc: 'Quadríceps, posteriores, glúteo médio, panturrilha e abdômen.', ex: ['leg_press', 'mesa_flexora', { id: 'extensora', series: 2 }, 'abdutora', 'panturrilha', 'abdominal'] },
+      C: { nome: 'Superior 2', dia: 'Quarta', regiao: 'sup', desc: 'Peito, costas, deltoide lateral e posterior, bíceps e tríceps.', ex: ['supino_maquina', 'remada_aberta', 'elevacao_lateral', 'crucifixo_invertido', 'triceps_frances', 'rosca_scott'] },
+      D: { nome: 'Inferior 2', dia: 'Sábado ou domingo', regiao: 'inf', desc: 'Glúteos, posteriores, quadríceps, lombar, adutores e core.', ex: ['leg_press_alto', 'flexora', 'extensora', 'extensao_lombar', 'adutora', 'panturrilha_sentado', 'pallof'] }
+    }
+  },
+  corpo: {
+    versao: '1.0', nome: 'Corpo inteiro', dias: 3, duracao: 'cerca de 45 min', resumo: 'Melhor em dias alternados. Cada músculo 3× por semana.', ordem: ['A', 'B', 'C'],
+    treinos: {
+      A: { nome: 'Corpo inteiro 1', dia: 'Dia 1', regiao: 'misto', desc: 'Pernas, peito, costas, ombros e abdômen.', ex: ['leg_press', 'supino_maquina', 'puxada_neutra', { id: 'mesa_flexora', series: 2 }, { id: 'elevacao_lateral', series: 2 }, 'abdominal'] },
+      B: { nome: 'Corpo inteiro 2', dia: 'Dia 2', regiao: 'misto', desc: 'Peito, costas, coxas, tríceps e panturrilha.', ex: ['supino_inclinado', 'remada_baixa', 'extensora', 'flexora', 'triceps_corda', { id: 'panturrilha', series: 2 }] },
+      C: { nome: 'Corpo inteiro 3', dia: 'Dia 3', regiao: 'misto', desc: 'Glúteos, costas, ombros, bíceps, lombar e core.', ex: ['leg_press_alto', 'remada_aberta', 'crucifixo', { id: 'crucifixo_invertido', series: 2 }, 'rosca_maquina', 'extensao_lombar', 'pallof'] }
+    }
+  },
+  essencial: {
+    versao: '1.0', nome: 'Essencial', dias: 2, duracao: 'cerca de 40 min', resumo: 'Semanas corridas ou de pouca energia. Mantém a massa muscular.', ordem: ['A', 'B'],
+    treinos: {
+      A: { nome: 'Essencial 1', dia: 'Dia 1', regiao: 'misto', desc: 'Pernas, peito, costas, ombros e abdômen.', ex: ['leg_press', 'supino_maquina', 'puxada_neutra', { id: 'mesa_flexora', series: 2 }, { id: 'elevacao_lateral', series: 2 }, 'abdominal'] },
+      B: { nome: 'Essencial 2', dia: 'Dia 2', regiao: 'misto', desc: 'Glúteos, peito, costas, posteriores e braços.', ex: ['leg_press_alto', 'supino_inclinado', 'remada_baixa', { id: 'flexora', series: 2 }, 'rosca_maquina', 'triceps_corda'] }
+    }
+  }
+};
+/* g = grupos trabalhados diretamente; gi = trabalho indireto (conta meia série) */
+const EX = {
+  supino_inclinado:    { nome: 'Supino inclinado', equip: 'Máquina articulada', g: ['Peito'], gi: ['Tríceps', 'Ombro anterior'], series: 3, min: 8, max: 12, rest: 150, dica: 'Escápulas apoiadas no banco e descida controlada em 2 a 3 segundos. Solte o ar ao empurrar.' },
+  puxada_neutra:       { nome: 'Puxada alta, pegada neutra', equip: 'Polia ou máquina', g: ['Costas'], gi: ['Bíceps', 'Ombro posterior'], series: 3, min: 8, max: 12, rest: 150, dica: 'Puxe em direção à parte de cima do peito, sem embalar o tronco.' },
+  crucifixo:           { nome: 'Peck deck', equip: 'Máquina', g: ['Peito'], gi: ['Ombro anterior'], series: 2, min: 12, max: 15, rest: 90, dica: 'Cotovelos levemente dobrados; abra até sentir o peito alongar, sem forçar o ombro.' },
+  remada_baixa:        { nome: 'Remada baixa, pegada neutra', equip: 'Máquina ou polia', g: ['Costas'], gi: ['Bíceps', 'Ombro posterior'], series: 3, min: 8, max: 12, rest: 150, dica: 'Peito alto e tronco parado; junte as escápulas no final do movimento.' },
+  elevacao_lateral:    { nome: 'Elevação lateral', equip: 'Polia, cabo baixo', g: ['Ombro lateral'], gi: [], series: 3, min: 12, max: 15, rest: 90, dica: 'Suba até a altura dos ombros, sem balanço e sem encolher os ombros.' },
+  triceps_corda:       { nome: 'Tríceps corda', equip: 'Polia', g: ['Tríceps'], gi: [], series: 2, min: 10, max: 15, rest: 90, dica: 'Cotovelos fixos ao lado do corpo; abra a corda embaixo.' },
+  rosca_maquina:       { nome: 'Rosca bíceps', equip: 'Máquina articulada', g: ['Bíceps'], gi: [], series: 2, min: 10, max: 12, rest: 90, dica: 'Cotovelos alinhados ao eixo da máquina; volte devagar.' },
+  leg_press:           { nome: 'Leg press 45°', equip: 'Máquina', g: ['Quadríceps'], gi: ['Glúteo', 'Adutores'], series: 3, min: 10, max: 12, rest: 150, dica: 'Lombar apoiada; desça até uns 90° no joelho e não trave o joelho em cima. Solte o ar ao empurrar.' },
+  mesa_flexora:        { nome: 'Mesa flexora', equip: 'Máquina, deitado', g: ['Posterior de coxa'], gi: [], series: 3, min: 10, max: 12, rest: 90, dica: 'Quadril colado no banco; volta controlada.' },
+  extensora:           { nome: 'Cadeira extensora', equip: 'Máquina', g: ['Quadríceps'], gi: [], series: 3, min: 12, max: 15, rest: 90, dica: 'Sem impulso; segure 1 segundo em cima.' },
+  abdutora:            { nome: 'Cadeira abdutora', equip: 'Máquina', g: ['Glúteo médio'], gi: [], series: 2, min: 12, max: 15, rest: 90, dica: 'Tronco apoiado; abra com controle e não deixe o peso bater na volta.' },
+  panturrilha:         { nome: 'Panturrilha no leg press', equip: 'Máquina', g: ['Panturrilha'], gi: [], series: 3, min: 12, max: 15, rest: 75, dica: 'Joelho estendido; amplitude completa com pausa embaixo.' },
+  abdominal:           { nome: 'Abdominal na máquina', equip: 'Máquina', g: ['Core'], gi: [], series: 2, min: 12, max: 15, rest: 60, dica: 'Solte o ar enquanto enrola o tronco, sem puxar o pescoço.' },
+  supino_maquina:      { nome: 'Supino reto', equip: 'Máquina articulada', g: ['Peito'], gi: ['Tríceps', 'Ombro anterior'], series: 3, min: 8, max: 12, rest: 150, dica: 'Escápulas apoiadas, pés firmes, descida controlada.' },
+  remada_aberta:       { nome: 'Remada aberta', equip: 'Máquina articulada', g: ['Costas'], gi: ['Ombro posterior', 'Bíceps'], series: 3, min: 8, max: 12, rest: 150, dica: 'Cotovelos abertos; puxe até a linha do peito sem embalar.' },
+  crucifixo_invertido: { nome: 'Crucifixo inverso', equip: 'Peck deck invertido', g: ['Ombro posterior'], gi: ['Costas'], series: 3, min: 12, max: 15, rest: 90, dica: 'Braços quase estendidos; abra usando o fundo do ombro, sem encolher.' },
+  triceps_frances:     { nome: 'Tríceps francês no cabo', equip: 'Polia com corda', g: ['Tríceps'], gi: [], series: 2, min: 10, max: 15, rest: 90, dica: 'De costas para a polia e braços acima da cabeça; estenda sem abrir os cotovelos.' },
+  rosca_scott:         { nome: 'Rosca Scott', equip: 'Máquina', g: ['Bíceps'], gi: [], series: 2, min: 10, max: 12, rest: 90, dica: 'Não estenda o cotovelo por completo com carga.' },
+  leg_press_alto:      { nome: 'Leg press, pés altos', equip: 'Máquina', g: ['Glúteo', 'Quadríceps'], gi: ['Adutores'], series: 3, min: 10, max: 12, rest: 150, dica: 'Pés no alto da plataforma; desça com controle sem tirar a lombar do apoio.' },
+  flexora:             { nome: 'Cadeira flexora sentada', equip: 'Máquina', g: ['Posterior de coxa'], gi: [], series: 3, min: 10, max: 12, rest: 90, dica: 'Com o quadril dobrado o posterior trabalha mais alongado; volte devagar.' },
+  extensao_lombar:     { nome: 'Extensão lombar no banco 45°', equip: 'Banco romano', g: ['Posterior de coxa', 'Glúteo', 'Lombar'], gi: [], series: 2, min: 10, max: 15, rest: 90, dica: 'Dobre no quadril e suba só até alinhar o corpo. Comece com o peso do corpo (carga 0).' },
+  adutora:             { nome: 'Cadeira adutora', equip: 'Máquina', g: ['Adutores'], gi: [], series: 2, min: 12, max: 15, rest: 90, dica: 'Sem impulso; volte controlando. Ajuda a proteger a virilha de quem joga bola.' },
+  panturrilha_sentado: { nome: 'Panturrilha sentado', equip: 'Máquina', g: ['Panturrilha'], gi: [], series: 3, min: 12, max: 15, rest: 75, dica: 'Joelho dobrado foca o sóleo; amplitude completa.' },
+  pallof:              { nome: 'Pallof press', equip: 'Polia', g: ['Core'], gi: [], series: 2, min: 10, max: 12, rest: 60, dica: 'De lado para a polia, empurre o cabo à frente do peito e resista à rotação. Conte as reps de cada lado.' },
+  rosca_direta:        { nome: 'Rosca direta sentado', equip: 'Halteres ou máquina', g: ['Bíceps'], gi: [], series: 2, min: 10, max: 12, rest: 90, dica: 'Cotovelos parados ao lado do corpo.' },
+  gluteo_maquina:      { nome: 'Glúteo máquina', equip: 'Máquina', g: ['Glúteo'], gi: [], series: 2, min: 12, max: 15, rest: 90, dica: 'Empurre com o calcanhar, sem arquear a lombar.' },
+  rosca_inversa:       { nome: 'Rosca inversa', equip: 'Polia, barra ou corda', g: ['Antebraço'], gi: ['Bíceps'], series: 2, min: 12, max: 15, rest: 90, dica: 'Punhos alinhados e cotovelos parados.' },
+  triceps_testa:       { nome: 'Tríceps testa na polia', equip: 'Polia', g: ['Tríceps'], gi: [], series: 2, min: 10, max: 12, rest: 90, dica: 'Cotovelos estáveis apontando para cima.' }
+};
+const GRUPOS = ['Peito', 'Costas', 'Quadríceps', 'Posterior de coxa', 'Glúteo', 'Ombro lateral', 'Ombro posterior', 'Ombro anterior', 'Bíceps', 'Tríceps', 'Panturrilha', 'Glúteo médio', 'Adutores', 'Core', 'Lombar', 'Antebraço'];
+const GRUPOS_GRANDES = ['Peito', 'Costas', 'Quadríceps', 'Posterior de coxa', 'Glúteo'];
+const META_SEMANA = 10;
+/* valores iniciais para quem ainda não tem histórico: [carga em kg, repetições] */
+const INICIAIS = { supino_inclinado: [20, 10], supino_maquina: [20, 10], crucifixo: [20, 12], puxada_neutra: [25, 10], remada_baixa: [25, 10], remada_aberta: [27.5, 10], elevacao_lateral: [4, 12], crucifixo_invertido: [15, 12], triceps_corda: [8, 12], triceps_frances: [8, 12], rosca_maquina: [12.5, 10], rosca_scott: [10, 10], leg_press: [60, 10], leg_press_alto: [50, 10], extensora: [20, 12], mesa_flexora: [20, 10], flexora: [20, 10], abdutora: [25, 12], adutora: [25, 12], panturrilha: [25, 12], panturrilha_sentado: [20, 12], abdominal: [20, 12], extensao_lombar: [0, 10], pallof: [5, 10], gluteo_maquina: [27.5, 12], rosca_direta: [10, 10], rosca_inversa: [10, 12], triceps_testa: [8, 10] };
+const incremento = id => (['leg_press', 'leg_press_alto'].includes(id) ? 5 : ['elevacao_lateral', 'pallof'].includes(id) ? 1 : 2.5);
+const ESFORCOS = [['Leve', 3], ['Moderado', 5], ['Difícil', 7], ['Muito difícil', 9]];
+const OBJETIVOS = ['Emagrecer preservando massa muscular', 'Ganhar massa muscular', 'Condicionamento', 'Força e saúde', 'Mobilidade e disposição'];
+const CAMPOS_MEDIDA = [['peso', 'Peso', 'kg'], ['cintura', 'Cintura', 'cm'], ['gordura', 'Gordura', '%'], ['magra', 'Massa magra', 'kg'], ['muscular', 'Massa muscular', 'kg']];
+const CAMPOS_BIO = [['peso', 'Peso (kg)'], ['gordura', 'Gordura corporal (%)'], ['magra', 'Massa magra (kg)'], ['muscular', 'Massa muscular (kg)'], ['gorda', 'Massa gorda (kg)'], ['agua', 'Água corporal (L)'], ['visceral', 'Gordura visceral']];
+const CAMPOS_TODOS = ['peso', 'cintura', 'gordura', 'magra', 'muscular', 'gorda', 'agua', 'visceral'];
+const NOMES_ANTIGOS = { 'supino inclinado maquina': 'supino_inclinado', 'supino inclinado': 'supino_inclinado', 'mesa flexora': 'mesa_flexora', 'peck deck': 'crucifixo', 'elevacao lateral no cabo': 'elevacao_lateral', 'elevacao lateral': 'elevacao_lateral', 'elevacao lateral leve': 'elevacao_lateral', 'cadeira adutora': 'adutora', 'abdominal maquina': 'abdominal', 'abdominal na maquina': 'abdominal', 'puxada alta pegada neutra': 'puxada_neutra', 'puxada alta, pegada neutra': 'puxada_neutra', 'puxada alta': 'puxada_neutra', 'leg press 45°': 'leg_press', 'leg press 45': 'leg_press', 'leg press': 'leg_press', 'remada baixa maquina': 'remada_baixa', 'remada baixa': 'remada_baixa', 'remada maquina': 'remada_baixa', 'cadeira extensora': 'extensora', 'triceps corda': 'triceps_corda', 'panturrilha no leg press': 'panturrilha', 'supino maquina': 'supino_maquina', 'supino reto': 'supino_maquina', 'chest press maquina': 'supino_maquina', 'leg press pes altos': 'leg_press_alto', 'leg press, pes mais altos': 'leg_press_alto', 'remada maquina pegada aberta': 'remada_aberta', 'remada aberta': 'remada_aberta', 'flexao de biceps na maquina': 'rosca_maquina', 'flexao de biceps': 'rosca_maquina', 'flexao de biceps maquina': 'rosca_maquina', 'flexao de biceps maquina articulada': 'rosca_maquina', 'rosca biceps maquina': 'rosca_maquina', 'gluteo maquina': 'gluteo_maquina', 'crucifixo inverso maquina': 'crucifixo_invertido', 'crucifixo inverso': 'crucifixo_invertido', 'rosca inversa no cabo': 'rosca_inversa', 'rosca inversa': 'rosca_inversa', 'rosca biceps com halteres sentado': 'rosca_direta', 'cadeira flexora': 'flexora', 'triceps testa na polia': 'triceps_testa' };
+const ESFORCO_ANTIGO = { 'leve': 3, 'moderado': 5, 'dificil': 7, 'muito dificil': 9 };
+const NOMES_EXTRAS = {};
+
+/* ================= utilidades ================= */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let USUARIO = null; /* id do usuário logado: separa os dados de cada pessoa neste aparelho */
+const chaveLS = k => (USUARIO && k.startsWith('mt') ? `${k}@${USUARIO}` : k);
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(chaveLS(k)); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(chaveLS(k), JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(chaveLS(k)); } catch (e) {} }
+};
+const num = v => { if (v === '' || v == null) return null; const n = Number(String(v).replace(',', '.')); return Number.isFinite(n) ? n : null; };
+const numBR = v => (v == null ? '' : String(v).replace('.', ','));
+const numBR1 = v => Number(v).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+const fmt1 = n => n.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+const clone = o => JSON.parse(JSON.stringify(o));
+const sleep = t => new Promise(r => setTimeout(r, t));
+const ms = iso => Date.parse(iso) || 0;
+const maisRecente = (a, b) => ms(b.inicio) - ms(a.inicio);
+const maisAntigo = (a, b) => ms(a.inicio) - ms(b.inicio);
+const dataCurta = x => new Date(x).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+const dataLonga = x => new Date(x).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+const dataISO = iso => { if (!iso) return '—'; const [y, m, d] = String(iso).split('-'); return `${d}/${m}/${y}`; };
+const hojeISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+const mmss = s => { s = Math.max(0, Math.floor(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+const tempoDesde = t => { const h = (Date.now() - t) / 36e5; if (h < 1) return 'há menos de 1 h'; if (h < 36) return `há ${Math.round(h)} h`; return `há ${Math.round(h / 24)} dias`; };
+const normalizar = s => String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const nomeEx = id => (EX[id] && EX[id].nome) || NOMES_EXTRAS[id] || id;
+const fmtKg = c => (c == null || c === 0 ? 'peso do corpo' : `${numBR(c)} kg`);
+const okSets = e => (e && Array.isArray(e.sets) ? e.sets.filter(x => x.ok) : []);
+const temOk = s => Object.values(s.ex || {}).some(e => okSets(e).length);
+const listaDe = s => s.lista || Object.keys(s.ex || {});
+const duracao = s => (s.fim ? `${Math.max(1, Math.round((ms(s.fim) - ms(s.inicio)) / 60000))} min` : 'duração não registrada');
+const seriesFeitas = s => Object.values(s.ex || {}).reduce((n, e) => n + okSets(e).length, 0);
+const cardioTxt = seg => (seg < 60 ? 'menos de 1 min' : `${Math.round(seg / 60)} min`);
+const e1rm = x => (x.c || 0) * (1 + (x.r || 0) / 30);
+const diaLocal = t => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const rfTxt = r => (r === 3 ? '3+' : String(r));
+function fmtSets(sets) {
+  if (!sets.length) return '';
+  const cargas = sets.map(x => x.c ?? 0);
+  if (cargas.every(c => c === cargas[0])) return `${fmtKg(sets[0].c)} × ${sets.map(x => x.r ?? '?').join(', ')}`;
+  return sets.map(x => `${fmtKg(x.c)} × ${x.r ?? '?'}`).join(', ');
+}
+
+/* ================= estado e dados ================= */
+function carregarDocs() { return LS.get('mt2_docs', {}) || {}; }
+function dadosLegados() { try { const d = JSON.parse(localStorage.getItem('mt2_docs') || 'null'); return d && typeof d === 'object' && Object.keys(d).length ? d : null; } catch (e) { return null; } }
+const S = {
+  page: 'home', docs: {}, atual: null, pend: new Set(), apagados: new Set(),
+  auth: { estado: 'carregando', tela: 'entrar', msg: '', erro: '', email: '', user: null, papel: null }, consentido: false, trocarSenha: false,
+  modo: 'conectando', busca: '', exForca: null, periodo: 14, pergunta: '', relVisivel: false,
+  cal: null, diaSel: null, aberto: null, pularOnb: false, editarPerfil: false,
+  ia: { texto: '', estado: 'idle', ctl: null, nota: '' }, fotoOk: false,
+  rec: { passo: 1, escolha: 'principal' }, notas: new Set()
+};
+let coll = null, downloads = null, sampleFn = null, assetsNs = null, sb = null;
+const salvarPend = () => LS.set('mt_pend', [...S.pend]);
+const salvarApagados = () => LS.set('mt_apagados', [...S.apagados]);
+const salvarCache = () => LS.set('mt2_docs', S.docs);
+const tipoDoc = d => d.tipo || (String(d.id).startsWith('s') ? 'sessao' : 'outro');
+const sessoesTodas = () => Object.values(S.docs).filter(d => tipoDoc(d) === 'sessao');
+const medidas = () => Object.values(S.docs).filter(d => d.tipo === 'medida').sort((a, b) => String(a.data).localeCompare(String(b.data)));
+const perfil = () => S.docs.perfil || { id: 'perfil', tipo: 'perfil' };
+const FotosLocais = {
+  db: null, urls: {},
+  abrir() { return this.db ? Promise.resolve(this.db) : new Promise((res, rej) => { const r = indexedDB.open('meu-treino-fotos', 1); r.onupgradeneeded = () => r.result.createObjectStore('fotos'); r.onsuccess = () => { this.db = r.result; res(this.db); }; r.onerror = () => rej(r.error); }); },
+  async salvar(blob) { const db = await this.abrir(), id = 'f' + Date.now(); await new Promise((res, rej) => { const tx = db.transaction('fotos', 'readwrite'); tx.objectStore('fotos').put(blob, id); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); this.urls[id] = URL.createObjectURL(blob); return id; },
+  async salvarComId(id, blob) { const db = await this.abrir(); await new Promise((res, rej) => { const tx = db.transaction('fotos', 'readwrite'); tx.objectStore('fotos').put(blob, id); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); if (this.urls[id]) URL.revokeObjectURL(this.urls[id]); this.urls[id] = URL.createObjectURL(blob); },
+  async ler(id) { const db = await this.abrir(); return new Promise(res => { const req = db.transaction('fotos', 'readonly').objectStore('fotos').get(id); req.onsuccess = () => res(req.result || null); req.onerror = () => res(null); }); },
+  async apagar(id) { try { const db = await this.abrir(); await new Promise(res => { const tx = db.transaction('fotos', 'readwrite'); tx.objectStore('fotos').delete(id); tx.oncomplete = res; tx.onerror = res; }); } catch (e) {} if (this.urls[id]) URL.revokeObjectURL(this.urls[id]); delete this.urls[id]; },
+  async carregarTodas() { const db = await this.abrir(); await new Promise(res => { const req = db.transaction('fotos', 'readonly').objectStore('fotos').openCursor(); req.onsuccess = () => { const c = req.result; if (c) { this.urls[c.key] = URL.createObjectURL(c.value); c.continue(); } else res(); }; req.onerror = () => res(); }); }
+};
+const fotosLocaisOk = () => !window.claude && 'indexedDB' in window;
+const podeFoto = () => !!assetsNs || fotosLocaisOk();
+const baixandoFoto = new Set();
+function baixarFoto(ref) {
+  if (!sb || baixandoFoto.has(ref)) return;
+  baixandoFoto.add(ref);
+  sb.storage.from('fotos').download(ref.slice(3)).then(async ({ data, error }) => {
+    if (error || !data) return;
+    await FotosLocais.salvarComId(ref, data);
+    if (S.page === 'library') render();
+    else if (S.page === 'session' && S.atual) document.querySelectorAll('[data-foto-carregando]').forEach(el => { const card = el.closest('[data-ex]'); if (card && S.atual.ex[card.dataset.ex]) card.outerHTML = cardEx(card.dataset.ex); });
+  }).catch(() => {}).finally(() => baixandoFoto.delete(ref));
+}
+const srcFoto = ref => { const u = FotosLocais.urls[ref]; if (u) return u; if (String(ref).startsWith('sb:')) baixarFoto(ref); return ''; };
+const podeBaixar = () => !!downloads || !window.claude;
+const midia = () => { const m = S.docs.midia || {}; return { fotos: m.fotos || {}, videos: m.videos || {} }; };
+
+/* programa ativo do perfil: o principal, ou a adaptação para quem está começando */
+const progDe = p => (p.programa === 'adaptacao' ? 'corpo' : PROGRAMAS[p.programa] ? p.programa : 'principal');
+const progChave = () => progDe(perfil());
+function prog() { return PROGRAMAS[progChave()]; }
+const treinoDef = t => prog().treinos[t] || null;
+const itensTreino = t => (treinoDef(t) ? treinoDef(t).ex.map(it => (typeof it === 'string' ? { id: it } : it)) : []);
+function prescricao(id, t) {
+  const d = EX[id] || {}, it = t && treinoDef(t) ? itensTreino(t).find(x => x.id === id) : null;
+  return { series: (it && it.series) || d.series || 3, min: (it && it.min) || d.min || 8, max: (it && it.max) || d.max || 12, rest: d.rest || 90 };
+}
+const regioesDe = r => (r === 'misto' ? ['sup', 'inf'] : [r || 'sup']);
+const regioesTreino = t => regioesDe(treinoDef(t) ? treinoDef(t).regiao : (t === 'B' || t === 'D' ? 'inf' : 'sup'));
+const regioesSessao = s => (s.regiao ? regioesDe(s.regiao) : regioesTreino(s.treino));
+const nomeTreino = s => s.nomeTreino || (treinoDef(s.treino) ? treinoDef(s.treino).nome : '');
+const resumoTreino = t => { const it = itensTreino(t); return `${it.length} exercícios, ${it.reduce((n, x) => n + prescricao(x.id, t).series, 0)} séries previstas`; };
+
+function medidasTodas() {
+  const lista = medidas().map(m => Object.assign({}, m)), p = perfil();
+  if (p.ref && p.refData && Object.keys(p.ref).length) {
+    const mesmo = lista.find(m => m.data === p.refData);
+    if (mesmo) Object.keys(p.ref).forEach(k => { if (mesmo[k] == null) mesmo[k] = p.ref[k]; });
+    else lista.push(Object.assign({ id: 'ref', tipo: 'medida', data: p.refData, obs: 'Bioimpedância do perfil', doPerfil: true }, p.ref));
+  }
+  return lista.sort((a, b) => String(a.data).localeCompare(String(b.data)));
+}
+const ultimaCom = k => { const l = medidasTodas(); for (let i = l.length - 1; i >= 0; i--) if (l[i][k] != null) return l[i]; return null; };
+function indexarNomes() {
+  Object.values(S.docs).forEach(d => { if (d.ex) Object.entries(d.ex).forEach(([id, e]) => { if (!EX[id] && e && e.nome) NOMES_EXTRAS[id] = e.nome; }); });
+}
+const cardioPadrao = () => ({ modo: 'continuo', forte: 1, leve: 2, rodando: false, inicioMs: null, acumulado: 0, obs: '', seg: 0, feito: false, pulado: false });
+function normalizarAtual(s) {
+  if (!s) return s;
+  s.tipo = 'sessao';
+  if (s.forcaOk == null) s.forcaOk = s.etapa === 'cardio' || s.etapa === 'final';
+  if (!s.esforco) s.esforco = 'Moderado';
+  s.cardio = Object.assign(cardioPadrao(), s.cardio || {});
+  listaDe(s).forEach(id => { if (s.ex[id] && !s.ex[id].p) s.ex[id].p = prescricao(id, s.treino); });
+  return s;
+}
+function carregarDoUsuario() {
+  S.docs = carregarDocs(); S.atual = normalizarAtual(LS.get('mt_atual', null));
+  S.pend = new Set(LS.get('mt_pend', [])); S.apagados = new Set(LS.get('mt_apagados', []));
+  indexarNomes();
+}
+
+function rascunhoNuvem() { return sessoesTodas().find(s => !s.arquivado && s.status === 'andamento' && Date.now() - ms(s.inicio) < 12 * 36e5) || null; }
+function rascunho() { return S.atual || rascunhoNuvem(); }
+function validas() {
+  const r = rascunho();
+  return sessoesTodas().filter(s => !s.arquivado && (!r || s.id !== r.id) && (s.status === 'concluido' || temOk(s))).sort(maisRecente);
+}
+const doPrograma = () => validas().filter(s => !s.importado);
+function ultimaSessao(t) { return doPrograma().find(s => s.treino === t) || null; }
+function proximoTreino() {
+  const P = prog(), u = doPrograma().find(s => P.ordem.includes(s.treino));
+  if (!u) return P.ordem[0];
+  return P.ordem[(P.ordem.indexOf(u.treino) + 1) % P.ordem.length];
+}
+function historicoEx(id) {
+  return validas().slice().reverse().map(s => {
+    const e = s.ex && s.ex[id], sets = okSets(e);
+    const dif = e && e.dif ? e.dif : (e && e.rf === 0 ? 'Difícil' : null);
+    return { d: s.inicio, sets, dif, p: (e && e.p) || prescricao(id, s.treino) };
+  }).filter(r => r.sets.length);
+}
+function sugestao(id, p) {
+  const h = historicoEx(id);
+  if (!h.length) return { tipo: 'novo', texto: 'Primeira vez: comece leve e deixe 2 a 3 repetições sobrando para achar a carga.' };
+  const u = h[h.length - 1], a = h[h.length - 2];
+  const abaixo = r => r.sets.some(x => (x.r ?? 0) < p.min);
+  if (u.sets.length >= u.p.series && u.sets.every(x => (x.r ?? 0) >= p.max)) {
+    if (u.dif === 'Difícil') return { tipo: 'dificil', texto: `Você chegou a ${p.max} reps, mas marcou difícil. Repita a carga até ficar moderado.` };
+    return { tipo: 'subir', texto: `Bateu ${p.max} reps em todas as séries: suba o menor incremento hoje e volte para ${p.min} a ${Math.min(p.max, p.min + 2)} reps.` };
+  }
+  if (a && abaixo(u) && abaixo(a)) return { tipo: 'reduzir', texto: `Duas sessões abaixo de ${p.min} reps: reduza a carga em 5 a 10% e reconstrua.` };
+  return { tipo: 'manter', texto: 'Mantenha a carga e tente uma repetição a mais em alguma série.' };
+}
+function valoresIniciais(id, p) {
+  const h = historicoEx(id), u = h[h.length - 1], inc = incremento(id);
+  const faixa = r => Math.min(p.max, Math.max(p.min, r ?? p.min));
+  if (!u) { const d = INICIAIS[id] || [null, p.min]; return { origem: 'tabela', inc, sets: Array.from({ length: p.series }, () => ({ c: d[0], r: faixa(d[1]) })) }; }
+  const sug = sugestao(id, p);
+  return { origem: sug.tipo, inc, sets: Array.from({ length: p.series }, (_, k) => {
+    const us = u.sets[k] || u.sets[u.sets.length - 1];
+    if (sug.tipo === 'subir') return { c: (us.c || 0) + inc, r: p.min };
+    if (sug.tipo === 'reduzir') return { c: us.c ? Math.max(0, Math.floor(us.c * 0.9 / inc) * inc) : us.c, r: p.min };
+    return { c: us.c, r: faixa(us.r) };
+  }) };
+}
+function textoOrigem(e) {
+  const p = e.p || {};
+  return ({ tabela: 'Primeira vez: valores iniciais para o seu perfil. Ajuste se precisar.',
+    subir: `Você bateu ${p.max} reps em todas as séries na última vez: a carga já veio ${numBR(e.inc)} kg maior.`,
+    reduzir: `Duas sessões abaixo de ${p.min} reps: a carga já veio cerca de 10% menor.`,
+    manter: 'Mesma carga da última vez. Tente uma repetição a mais em alguma série.',
+    dificil: 'Na última vez ficou difícil: mesma carga para consolidar.' })[e.origem] || '';
+}
+function avisoRecuperacao(t) {
+  const regs = regioesTreino(t);
+  const last = validas().find(s => regioesSessao(s).some(r => regs.includes(r)));
+  if (!last) return '';
+  const fim = ms(last.fim || last.inicio);
+  if ((Date.now() - fim) / 36e5 >= 44) return '';
+  const comum = regioesSessao(last).filter(r => regs.includes(r));
+  const nome = comum.length > 1 ? 'o corpo todo' : comum[0] === 'inf' ? 'pernas' : 'a parte de cima';
+  const P = prog(), i = P.ordem.indexOf(t);
+  let alt = null;
+  for (let j = 1; j < P.ordem.length && !alt; j++) { const x = P.ordem[(i + j) % P.ordem.length]; if (!regioesTreino(x).some(r => comum.includes(r))) alt = x; }
+  return `Você treinou ${nome} ${tempoDesde(fim)}. O ideal são 48 h entre treinos dos mesmos músculos.${alt ? ` Se der, faça o treino ${alt} hoje.` : ''}`;
+}
+function volume(desde) {
+  const v = {};
+  validas().filter(s => ms(s.inicio) >= desde).forEach(s => listaDe(s).forEach(id => {
+    const n = okSets(s.ex && s.ex[id]).length; if (!n) return;
+    const d = EX[id];
+    if (!d) { v.Outros = (v.Outros || 0) + n; return; }
+    d.g.forEach(g => { v[g] = (v[g] || 0) + n; });
+    (d.gi || []).forEach(g => { v[g] = (v[g] || 0) + n * 0.5; });
+  }));
+  return v;
+}
+function contarFeitas(s) {
+  return listaDe(s).reduce((acc, id) => { const e = s.ex[id]; if (e) { acc.total += e.sets.length; acc.ok += okSets(e).length; } return acc; }, { ok: 0, total: 0 });
+}
+function intervalosCurtos(ss) {
+  const ultimo = {}, curtos = [];
+  ss.slice().sort(maisAntigo).forEach(s => {
+    const ini = ms(s.inicio);
+    regioesSessao(s).forEach(reg => {
+      if (ultimo[reg] != null) { const h = (ini - ultimo[reg]) / 36e5; if (h < 44) curtos.push({ reg, h, d: s.inicio }); }
+      ultimo[reg] = ms(s.fim || s.inicio);
+    });
+  });
+  return curtos;
+}
+function media(ss, k) { const v = ss.map(s => s[k]).filter(x => x != null); return v.length ? fmt1(v.reduce((a, b) => a + b, 0) / v.length) : '—'; }
+function recordes(s) {
+  const out = [];
+  listaDe(s).forEach(id => {
+    const feitos = okSets(s.ex[id]); if (!feitos.length) return;
+    const top = feitos.reduce((a, b) => (e1rm(b) > e1rm(a) ? b : a));
+    if (!(e1rm(top) > 0)) return;
+    let ant = 0;
+    validas().forEach(x => { if (x.id !== s.id) okSets(x.ex && x.ex[id]).forEach(z => { ant = Math.max(ant, e1rm(z)); }); });
+    if (ant > 0 && e1rm(top) > ant + 0.01) out.push(`${nomeEx(id)}: ${fmtKg(top.c)} × ${top.r}`);
+  });
+  return out;
+}
+
+/* ================= armazenamento: sua conta (db) + cópia no aparelho ================= */
+function setModo(m) {
+  const antes = S.modo; S.modo = m;
+  if (antes === 'conectando' && m !== 'conectando' && S.page !== 'session') { render(); return; }
+  const el = $('#status'); if (el) el.textContent = statusTexto();
+}
+function statusTexto() {
+  return { conectando: 'Sincronizando com a sua conta…', nuvem: 'Sincronizado com a sua conta.', offline: 'Sem conexão agora. Fica salvo neste celular e sobe quando a conexão voltar.', local: 'Salvo neste celular.' }[S.modo] || '';
+}
+async function iniciarNuvem() {
+  if (!window.claude || typeof window.claude.use !== 'function') {
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+    if (fotosLocaisOk()) FotosLocais.carregarTodas().then(() => { if (['session', 'library'].includes(S.page)) render(); }).catch(() => {});
+    setModo('local'); return;
+  }
+  try {
+    const [dbNs, userNs, dl, smp, as] = await Promise.all(['db', 'user', 'downloads', 'sample', 'assets'].map(n => claude.use(n)));
+    downloads = dl; sampleFn = smp; assetsNs = as;
+    if (assetsNs && (S.page === 'session' || S.page === 'library')) render();
+    if (sampleFn) { try { const lim = await sampleFn.limits(); S.fotoOk = !!(lim && lim.images); } catch (e) { S.fotoOk = false; } }
+    const uid = userNs ? await userNs.id() : null;
+    if (!dbNs || !uid) { setModo('local'); return; }
+    coll = dbNs.collection('data/users/' + uid);
+    let primeiro = true;
+    const espera = setTimeout(() => { if (S.modo === 'conectando') setModo('offline'); }, 10000);
+    coll.onSnapshot(snap => {
+      const confirmado = !snap.metadata.fromCache;
+      mesclar(snap.docs.map(d => d.data()).filter(x => x && x.id));
+      if (confirmado) { clearTimeout(espera); setModo('nuvem'); }
+      if (confirmado && primeiro) { primeiro = false; enviarPendentes(); }
+    }, () => { clearTimeout(espera); coll = null; setModo('offline'); });
+  } catch (e) { setModo('local'); }
+}
+function mesclar(daNuvem) {
+  const mapa = {};
+  daNuvem.forEach(d => { mapa[d.id] = d; });
+  Object.values(S.docs).forEach(d => { if (S.pend.has(d.id)) mapa[d.id] = d; });
+  S.apagados.forEach(id => { delete mapa[id]; });
+  S.docs = mapa; indexarNomes(); salvarCache();
+  if (S.page === 'home' || S.page === 'workouts' || S.page === 'onboarding') render();
+}
+const fila = {};
+let ultimoAvisoFalha = 0;
+/* motivo curto devolvido pelo servidor, para diagnosticar sem adivinhar */
+function motivo(e) {
+  if (!e) return 'erro desconhecido';
+  const partes = [e.code, e.message || e.error_description || e.details || (typeof e === 'string' ? e : '')].filter(Boolean).map(String);
+  return (partes.join(': ') || 'erro desconhecido').slice(0, 120);
+}
+function avisarFalha(e) {
+  if (Date.now() - ultimoAvisoFalha < 15000) return;
+  ultimoAvisoFalha = Date.now();
+  toast(e && e.code === 'quota_exceeded' ? 'Espaço da conta cheio. Exporte um backup e apague registros antigos.' : `Não salvou na conta agora (${motivo(e)}). Ficou guardado neste aparelho.`, 7000);
+}
+const proximoDoc = {}, agendado = {};
+let cadeia = Promise.resolve();
+const comPrazo = (p, t) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: 'timeout' }), t))]);
+function emSerie(fn) { const p = cadeia.then(fn); cadeia = p.catch(() => {}); return p; }
+/* salva no aparelho na hora e envia para a conta em segundo plano, uma gravação por vez */
+const TIPOS_NUVEM = ['sessao', 'medida', 'perfil', 'midia'];
+function falhaDeRede(err) {
+  const m = String((err && (err.message || err.code)) || err || '');
+  return (err && err.code === 'timeout') || /fetch|network|Failed|Load failed|offline/i.test(m);
+}
+function tratarFalha(err) {
+  if (falhaDeRede(err)) { if (S.modo !== 'offline') setModo('offline'); return; }
+  avisarFalha(err);
+}
+/* salva no aparelho na hora e envia para a conta em segundo plano, uma gravação por vez */
+function gravarNuvem(doc) {
+  S.pend.add(doc.id); salvarPend();
+  if (!sb || !USUARIO) return;
+  proximoDoc[doc.id] = clone(doc);
+  if (agendado[doc.id]) return;
+  agendado[doc.id] = true;
+  emSerie(async () => {
+    agendado[doc.id] = false;
+    const dados = proximoDoc[doc.id]; delete proximoDoc[doc.id];
+    if (!dados || !sb || !USUARIO) return;
+    const tipo = tipoDoc(dados);
+    if (!TIPOS_NUVEM.includes(tipo)) { S.pend.delete(dados.id); salvarPend(); return; }
+    try {
+      const { error } = await comPrazo(sb.from('registros').upsert({ usuario_id: USUARIO, id: dados.id, tipo, dados }, { onConflict: 'usuario_id,id' }), 20000);
+      if (error) throw error;
+      if (!proximoDoc[dados.id]) { S.pend.delete(dados.id); salvarPend(); }
+      if (S.modo === 'offline') setModo('nuvem');
+    } catch (err) { tratarFalha(err); }
+  });
+}
+function gravarDoc(doc) { S.docs[doc.id] = clone(doc); salvarCache(); gravarNuvem(doc); }
+function enviarPendentes() {
+  if (!sb || !USUARIO) return;
+  for (const id of [...S.pend]) {
+    const d = (S.atual && S.atual.id === id) ? S.atual : S.docs[id];
+    if (!d) { S.pend.delete(id); salvarPend(); continue; }
+    if (!agendado[id]) gravarNuvem(d);
+  }
+  for (const id of [...S.apagados]) apagarNuvem(id);
+  enviarFotosPendentes();
+}
+async function puxarNuvem(primeira) {
+  if (!sb || !USUARIO) return;
+  try {
+    const linhas = [];
+    for (let de = 0; ; de += 1000) {
+      const { data, error } = await comPrazo(sb.from('registros').select('id,tipo,dados').eq('usuario_id', USUARIO).range(de, de + 999), 20000);
+      if (error) throw error;
+      linhas.push(...(data || []));
+      if (!data || data.length < 1000) break;
+    }
+    mesclar(linhas.map(l => Object.assign({}, l.dados, { id: l.id })));
+    setModo('nuvem');
+    if (primeira || S.pend.size || S.apagados.size) enviarPendentes();
+  } catch (err) {
+    if (falhaDeRede(err)) setModo('offline'); else { setModo('offline'); avisarFalha(err); }
+  }
+}
+window.addEventListener('online', () => { enviarPendentes(); puxarNuvem(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && USUARIO && S.page !== 'session') puxarNuvem(); });
+window.addEventListener('online', () => enviarPendentes());
+setInterval(() => { if (sb && USUARIO && (S.pend.size || S.apagados.size)) enviarPendentes(); }, 60000);
+function apagarNuvem(id) {
+  if (!sb || !USUARIO) return;
+  emSerie(async () => {
+    try {
+      const { error } = await comPrazo(sb.from('registros').delete().eq('usuario_id', USUARIO).eq('id', id), 20000);
+      if (error) throw error;
+      if (!S.docs[id]) { S.apagados.delete(id); salvarApagados(); }
+    } catch (err) { tratarFalha(err); }
+  });
+}
+function apagarDoc(id) {
+  delete proximoDoc[id];
+  delete S.docs[id]; salvarCache();
+  S.pend.delete(id); salvarPend(); S.apagados.add(id); salvarApagados();
+  apagarNuvem(id);
+}
+let tSalvar = null;
+function salvarAtual(nuvem, imediato) {
+  if (!S.atual) return;
+  LS.set('mt_atual', S.atual);
+  if (!nuvem) return;
+  clearTimeout(tSalvar);
+  if (imediato) { gravarNuvem(S.atual); return; }
+  tSalvar = setTimeout(() => { if (S.atual) gravarNuvem(S.atual); }, 1500);
+}
+
+/* ================= conta ================= */
+const urlApp = () => location.origin + location.pathname;
+let entrando = false;
+function msgAuth(err) {
+  const m = String((err && err.message) || err || '');
+  if (/Invalid login credentials/i.test(m)) return 'E-mail ou senha incorretos.';
+  if (/Email not confirmed/i.test(m)) return 'Confirme seu e-mail pelo link que enviamos antes de entrar.';
+  if (/already registered|already been registered|already exists/i.test(m)) return 'Já existe uma conta com esse e-mail. Entre ou recupere a senha.';
+  if (/rate limit|only request this after|security purposes|too many/i.test(m)) return 'Muitas tentativas seguidas. Aguarde um minuto e tente de novo.';
+  if (/should be different|same password/i.test(m)) return 'A nova senha precisa ser diferente da atual.';
+  if (/Password|weak|pwned/i.test(m)) return 'Senha fraca: use pelo menos 8 caracteres, misturando letras e números.';
+  if (/fetch|network|Failed|timeout/i.test(m)) return 'Sem conexão com a internet. Tente de novo quando estiver online.';
+  return 'Não deu certo. Tente de novo. (' + m + ')';
+}
+function criarCliente() {
+  if (!SUPA_URL || !SUPA_CHAVE) return null;
+  if (!window.supabase || typeof window.supabase.createClient !== 'function') return null;
+  try { return window.supabase.createClient(SUPA_URL, SUPA_CHAVE, { auth: { flowType: 'pkce', persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }); }
+  catch (e) { return null; }
+}
+async function iniciarConta() {
+  sb = criarCliente();
+  if (!sb) { S.auth = Object.assign(S.auth, { estado: 'fora', erro: !SUPA_URL ? 'Este endereço de teste ainda não foi ligado a um banco de dados.' : 'Não foi possível carregar o login. Confira a internet e abra o app de novo.' }); render(); return; }
+  const voltouDeLink = /[?&](code|error)=/.test(location.search);
+  sb.auth.onAuthStateChange((evento, sessao) => { setTimeout(() => aoMudarSessao(evento, sessao), 0); });
+  let sessao = null;
+  try { const { data, error } = await sb.auth.getSession(); sessao = data && data.session; if (error && voltouDeLink) S.auth.msg = 'E-mail confirmado. Entre com seu e-mail e senha.'; }
+  catch (e) { /* sem sessão */ }
+  if (voltouDeLink) { try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) {} }
+  if (sessao) await entrarNoApp(sessao);
+  else if (S.auth.estado !== 'recuperacao') { S.auth.estado = 'fora'; render(); }
+}
+function aoMudarSessao(evento, sessao) {
+  if (evento === 'PASSWORD_RECOVERY') { S.auth = Object.assign(S.auth, { estado: 'recuperacao', tela: 'novasenha', erro: '', msg: '' }); S.sessaoRecuperacao = sessao; render(); return; }
+  if (evento === 'SIGNED_IN' && sessao && S.auth.estado !== 'dentro' && S.auth.estado !== 'recuperacao') { entrarNoApp(sessao); return; }
+  if (evento === 'SIGNED_OUT' && S.auth.estado === 'dentro') sairLocal('Sua sessão terminou. Entre de novo.');
+}
+async function entrarNoApp(sessao) {
+  if (!sessao || !sessao.user) return;
+  if ((S.auth.estado === 'dentro' && USUARIO === sessao.user.id) || entrando) return;
+  entrando = true;
+  try {
+    USUARIO = sessao.user.id;
+    S.auth = Object.assign(S.auth, { estado: 'dentro', user: sessao.user, email: sessao.user.email, erro: '', msg: '' });
+    carregarDoUsuario();
+    S.modo = 'conectando'; S.consentido = !!LS.get('mt_consent', null); S.page = S.atual ? S.page : (S.page === 'session' ? 'home' : S.page);
+    render();
+    if (!S.consentido) await verificarConsentimento();
+    await puxarNuvem(true);
+    carregarPapel();
+    if (S.consentido) oferecerMigracao();
+  } finally { entrando = false; }
+}
+async function verificarConsentimento() {
+  try {
+    const { data, error } = await comPrazo(sb.from('consentimentos').select('documento,versao').eq('usuario_id', USUARIO), 15000);
+    if (error) throw error;
+    const docs = new Set((data || []).filter(d => d.versao === VERSAO_TERMOS).map(d => d.documento));
+    if (['termos', 'privacidade', 'dados_saude'].every(d => docs.has(d))) { LS.set('mt_consent', { versao: VERSAO_TERMOS, em: new Date().toISOString() }); S.consentido = true; render(); }
+  } catch (e) { /* sem conexão: a tela de consentimento pede para tentar de novo */ }
+}
+async function carregarPapel() {
+  try {
+    const { data } = await comPrazo(sb.from('perfis').select('nome,papel').eq('id', USUARIO).maybeSingle(), 15000);
+    if (data) { S.auth.papel = data.papel; S.auth.nomeConta = data.nome; if (S.page === 'profile') render(); }
+  } catch (e) {}
+}
+async function oferecerMigracao() {
+  if (LS.get('mt_migracao', null)) return;
+  const leg = dadosLegados();
+  if (!leg) return;
+  const docs = Object.values(leg).filter(d => d && d.id);
+  const nS = docs.filter(d => tipoDoc(d) === 'sessao').length, nM = docs.filter(d => d.tipo === 'medida').length;
+  const ok = await confirmar(`Encontramos ${nS} ${nS === 1 ? 'treino' : 'treinos'} e ${nM} ${nM === 1 ? 'medição' : 'medições'} salvos neste celular antes do login. Enviar para a sua conta?`, 'Enviar', 'Agora não');
+  if (!ok) { LS.set('mt_migracao', 'recusada'); return; }
+  migrarLegados(docs);
+}
+function migrarLegados(docs) {
+  let n = 0;
+  docs.forEach(d => { if (TIPOS_NUVEM.includes(tipoDoc(d)) && !S.docs[d.id]) { gravarDoc(d); n++; } });
+  try { localStorage.setItem('mt2_docs_legado', localStorage.getItem('mt2_docs')); localStorage.removeItem('mt2_docs'); localStorage.removeItem('mt_atual'); localStorage.removeItem('mt_pend'); localStorage.removeItem('mt_apagados'); } catch (e) {}
+  LS.set('mt_migracao', new Date().toISOString());
+  indexarNomes(); render(); toast(n ? `${n} registros enviados para a sua conta` : 'Esses dados já estavam na sua conta');
+}
+async function sairDaConta() {
+  if (S.pend.size && !await confirmar(`${S.pend.size} ${S.pend.size === 1 ? 'registro ainda não foi enviado' : 'registros ainda não foram enviados'} para a sua conta. Se sair agora, eles se perdem. Sair mesmo assim?`, 'Sair', 'Ficar')) return;
+  try { await sb.auth.signOut(); } catch (e) {}
+  sairLocal('Você saiu da conta.');
+}
+function sairLocal(msg) {
+  ['mt2_docs', 'mt_atual', 'mt_pend', 'mt_apagados'].forEach(k => LS.del(k));
+  USUARIO = null; pararTimer(); liberarTela();
+  Object.assign(S, { docs: {}, atual: null, pend: new Set(), apagados: new Set(), consentido: false, page: 'home', trocarSenha: false });
+  S.auth = { estado: 'fora', tela: 'entrar', msg: msg || '', erro: '', email: '', user: null, papel: null };
+  render();
+}
+function vAuth() {
+  const a = S.auth, aviso = (a.erro ? `<p class="aviso" style="margin-top:12px">${esc(a.erro)}</p>` : '') + (a.msg ? `<p class="alerta">${esc(a.msg)}</p>` : '');
+  const caixa = (titulo, sub, corpo) => `<div class="card" style="max-width:440px;margin:10px auto"><div class="eyebrow">Sua conta</div><h2 style="font-size:25px;margin:6px 0 4px">${titulo}</h2><p class="muted">${sub}</p>${corpo}${aviso}</div>`;
+  if (a.estado === 'carregando') return caixa('Carregando…', 'Conferindo a sua conta.', '');
+  if (a.tela === 'criar') return caixa('Criar conta', 'Seus treinos ficam salvos na sua conta e aparecem em qualquer aparelho.', `<form data-form="auth-criar" class="fields" style="margin-top:12px">
+    <div class="field larga"><label for="a-nome">Nome</label><input id="a-nome" autocomplete="given-name" maxlength="60" required></div>
+    <div class="field larga"><label for="a-email">E-mail</label><input id="a-email" type="email" autocomplete="email" inputmode="email" required value="${esc(a.email || '')}"></div>
+    <div class="field"><label for="a-senha">Senha (mín. 8)</label><input id="a-senha" type="password" autocomplete="new-password" minlength="8" required></div>
+    <div class="field"><label for="a-senha2">Repita a senha</label><input id="a-senha2" type="password" autocomplete="new-password" minlength="8" required></div>
+    <button class="btn full larga field" type="submit">Criar conta</button></form>
+    <button class="lnk" style="margin-top:8px" data-a="auth-tela" data-t="entrar">Já tenho conta</button>`);
+  if (a.tela === 'esqueci') return caixa('Recuperar senha', 'Enviamos um link para você criar uma senha nova.', `<form data-form="auth-esqueci" style="margin-top:12px">
+    <div class="field"><label for="a-email">E-mail da conta</label><input id="a-email" type="email" autocomplete="email" inputmode="email" required value="${esc(a.email || '')}"></div>
+    <button class="btn full" type="submit" style="margin-top:12px">Enviar link</button></form>
+    <button class="lnk" style="margin-top:8px" data-a="auth-tela" data-t="entrar">Voltar para entrar</button>`);
+  if (a.tela === 'enviado') return caixa('Confira seu e-mail', `Enviamos um link para ${esc(a.email)}. Abra o e-mail neste celular e toque no link; ele traz você de volta ao app.`, `<p class="smalltxt" style="margin-top:10px">Não chegou? Veja a caixa de spam ou aguarde um minuto antes de pedir de novo.</p>
+    <button class="btn secondary full" style="margin-top:12px" data-a="auth-tela" data-t="entrar">Voltar para entrar</button>`);
+  if (a.tela === 'novasenha') return caixa('Nova senha', 'Escolha a nova senha da sua conta.', `<form data-form="auth-novasenha" class="fields" style="margin-top:12px">
+    <div class="field"><label for="a-senha">Nova senha (mín. 8)</label><input id="a-senha" type="password" autocomplete="new-password" minlength="8" required></div>
+    <div class="field"><label for="a-senha2">Repita a senha</label><input id="a-senha2" type="password" autocomplete="new-password" minlength="8" required></div>
+    <button class="btn full larga field" type="submit">Salvar nova senha</button></form>`);
+  return caixa('Entrar', 'Entre para ver seus treinos, cargas e evolução.', `<form data-form="auth-entrar" style="margin-top:12px">
+    <div class="field"><label for="a-email">E-mail</label><input id="a-email" type="email" autocomplete="email" inputmode="email" required value="${esc(a.email || '')}"></div>
+    <div class="field" style="margin-top:9px"><label for="a-senha">Senha</label><input id="a-senha" type="password" autocomplete="current-password" required></div>
+    <button class="btn full" type="submit" style="margin-top:12px">Entrar</button></form>
+    <div class="row between" style="margin-top:8px"><button class="lnk" data-a="auth-tela" data-t="criar">Criar conta</button><button class="lnk" data-a="auth-tela" data-t="esqueci">Esqueci minha senha</button></div>`);
+}
+function vConsent() {
+  return `<div class="card" style="max-width:520px;margin:10px auto"><div class="eyebrow">Antes de começar</div><h2 style="font-size:24px;margin:6px 0 8px">Seus dados, suas regras</h2>
+    <p>O Meu Treino guarda seus treinos, cargas, medidas e as observações de saúde que você informar, numa conta protegida, em servidor no Brasil. Isso serve para acompanhar a sua evolução.</p>
+    <p class="smalltxt">No app, só você vê os seus dados. A administração do Meu Treino só acessa seus dados quando necessário para suporte e segurança. No futuro, um treinador só terá acesso se você autorizar. Você pode exportar ou pedir a exclusão dos seus dados quando quiser.</p>
+    <label class="row" style="align-items:flex-start;gap:10px;margin-top:12px;flex-wrap:nowrap"><input type="checkbox" id="c-termos" style="width:22px;height:22px;margin-top:2px;flex-shrink:0"><span>Li e aceito os termos de uso e a política de privacidade (versão preliminar ${VERSAO_TERMOS}).</span></label>
+    <label class="row" style="align-items:flex-start;gap:10px;margin-top:10px;flex-wrap:nowrap"><input type="checkbox" id="c-saude" style="width:22px;height:22px;margin-top:2px;flex-shrink:0"><span>Autorizo o uso dos meus dados de saúde (peso, medidas, dores e restrições) para acompanhar meus treinos.</span></label>
+    <button class="btn full" style="margin-top:16px" data-a="consent-aceitar">Concordo e continuar</button>
+    <button class="lnk" style="margin-top:8px" data-a="auth-sair">Sair da conta</button></div>`;
+}
+
+/* ================= telas ================= */
+const app = $('#app');
+const precisaCadastro = () => S.modo !== 'conectando' && !S.docs.perfil && !S.pularOnb && !validas().length && !S.atual;
+const PAGINAS = { home: ['inicio', ''], workouts: ['treinos', 'Meus treinos'], history: ['historico', 'Histórico'], session: ['sessao', ''], progress: ['evolucao', 'Evolução'], library: ['biblioteca', 'Biblioteca'], assistant: ['assistente', 'Assistente'], profile: ['perfil', 'Perfil'], recomecar: ['recomecar', 'Começar do zero'], onboarding: ['cadastro', ''] };
+const HASH_PAGINA = Object.fromEntries(Object.entries(PAGINAS).map(([k, v]) => [v[0], k]));
+const pilha = [];
+let navegando = false;
+const seloTeste = () => (AMBIENTE === 'teste' ? `<span class="pill" style="background:var(--red);color:#fff">Ambiente de teste</span>` : '');
+function cabecalho(page) {
+  if (page === 'home') return `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Seu desempenho, sua evolução</div></div>${seloTeste() || `<button class="btn ghost small" data-go="history">Histórico</button>`}`;
+  if (page === 'onboarding') return `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Primeiro acesso</div></div>`;
+  const titulo = page === 'session' && S.atual ? `Treino ${esc(S.atual.treino)}` : PAGINAS[page][1];
+  const info = page === 'session' && S.atual ? `<span class="info" id="hdr-info">${minutosDecorridos()} min</span>` : page === 'recomecar' ? `<span class="info">Passo ${S.rec.passo} de 3</span>` : '<span></span>';
+  return `<button class="voltar" data-a="voltar">← Voltar</button><span class="titulo">${titulo}</span>${info}`;
+}
+function render() {
+  if (S.auth.estado !== 'dentro' || !S.consentido) {
+    $('#top').innerHTML = `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Seu desempenho, sua evolução</div></div>${seloTeste()}`;
+    app.innerHTML = S.auth.estado !== 'dentro' ? vAuth() : vConsent();
+    document.body.classList.add('foco'); $('#nav').hidden = true;
+    return;
+  }
+  let page = S.page;
+  if (page === 'session' && !S.atual) page = S.page = 'home';
+  if (precisaCadastro()) page = 'onboarding';
+  $('#top').innerHTML = cabecalho(page);
+  app.innerHTML = ({ home: vHome, workouts: vWorkouts, history: vHistory, session: vSession, progress: vProgress, library: vLibrary, assistant: vAssistant, profile: vProfile, onboarding: vOnboarding, recomecar: vRecomecar }[page] || vHome)();
+  const foco = page === 'session' || page === 'onboarding' || page === 'recomecar';
+  document.body.classList.toggle('foco', foco);
+  $('#nav').hidden = foco;
+  document.querySelectorAll('#nav [data-go]').forEach(b => { const on = b.dataset.go === page; b.classList.toggle('active', on); b.setAttribute('aria-current', on ? 'page' : 'false'); });
+  if (page === 'session') atualizarCardioDOM();
+}
+const stat = (t, v, s) => `<div class="card"><div class="eyebrow">${t}</div><div class="stat">${v}</div><div class="smalltxt">${s}</div></div>`;
+const atalho = (p, ico, t, s) => `<button class="card shortcut" data-go="${p}"><div class="ico" aria-hidden="true">${ico}</div><strong>${t}</strong><div class="smalltxt">${s}</div></button>`;
+function barras(v, grupos) {
+  return `<div class="barras">` + grupos.map(g => { const val = v[g] || 0, pct = Math.min(100, val / META_SEMANA * 100);
+    return `<div class="barra-g"><span>${esc(g)}</span><div class="progress"><span class="${pct >= 100 ? 'cheio' : ''}" style="width:${pct}%"></span></div><span class="bg-val">${fmt1(val)}</span></div>`; }).join('') + `</div>`;
+}
+function cardTreino(t, destaque) {
+  const tr = treinoDef(t), u = ultimaSessao(t), aviso = avisoRecuperacao(t), r = rascunho();
+  return `<div class="card"><div class="workout"><div class="letter">${t}</div><div class="workout-info"><strong>Treino ${t} — ${esc(tr.nome)}</strong>
+      <div class="smalltxt">${esc(tr.desc)}</div><div class="smalltxt">${resumoTreino(t)}</div>
+      ${u ? `<div class="feito-em">✓ Concluído em ${dataLonga(u.inicio)}</div>` : `<div class="smalltxt" style="margin-top:5px">Ainda não concluído</div>`}</div>
+      ${destaque ? '' : `<button class="btn small" data-a="iniciar" data-t="${t}" ${r ? 'disabled' : ''}>▶ Iniciar</button>`}</div>
+    ${destaque ? '' : `<details class="lista-ex"><summary>Ver exercícios</summary><ul>${itensTreino(t).map(it => { const p = prescricao(it.id, t); return `<li><span>${esc(nomeEx(it.id))}</span><span>${p.series} × ${p.min}–${p.max}</span></li>`; }).join('')}</ul></details>`}
+    ${aviso ? `<p class="alerta">${esc(aviso)}</p>` : ''}
+    ${destaque ? `<button class="btn full" style="margin-top:12px" data-a="iniciar" data-t="${t}">▶ Iniciar treino ${t}</button>` : ''}</div>`;
+}
+function cardAndamento(r) {
+  const etapa = !r.forcaOk ? 'musculação' : (r.cardio && (r.cardio.feito || r.cardio.pulado)) ? 'finalização' : 'cardio';
+  const f = contarFeitas(r);
+  return `<div class="card"><div class="workout"><div class="letter">${esc(r.treino)}</div><div class="workout-info"><strong>Treino ${esc(r.treino)} — ${esc(nomeTreino(r))}</strong>
+    <div class="smalltxt">Em andamento desde ${new Date(r.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}. Etapa: ${etapa}. ${f.ok} de ${f.total} séries validadas.</div></div></div>
+    <div class="row" style="margin-top:12px"><button class="btn" style="flex:1" data-a="continuar">▶ Continuar</button><button class="btn secondary" data-a="descartar">Descartar</button></div></div>`;
+}
+function vHome() {
+  const p = perfil(), nome = (p.nome || '').trim(), r = rascunho(), prox = proximoTreino();
+  const mp = ultimaCom('peso'), mg = ultimaCom('gordura'), mm = ultimaCom('muscular');
+  let h = `<div class="hero"><div class="eyebrow">Seu painel pessoal</div><h1>${nome ? `Olá, ${esc(nome)}.<br>` : ''}Vamos evoluir?</h1>
+    <p>Treino inteligente, histórico e acompanhamento em um só lugar.</p>
+    <div class="row">${r ? `<button class="btn" data-a="continuar">▶ Continuar treino ${esc(r.treino)}</button>` : `<button class="btn" data-a="iniciar" data-t="${prox}">▶ Iniciar próximo treino</button>`}<span class="pill">Plano flexível</span></div>
+    <p class="smalltxt" id="status" style="margin:12px 0 0">${esc(statusTexto())}</p></div>`;
+  h += `<div class="grid stats">
+    ${stat('Peso de referência', mp ? numBR1(mp.peso) + ' kg' : '—', mp ? 'Atualizado em ' + dataISO(mp.data) : 'Registre na Evolução')}
+    ${stat('Gordura corporal', mg ? numBR1(mg.gordura) + '%' : '—', mg ? 'Bioimpedância de ' + dataISO(mg.data) : 'Sem bioimpedância')}
+    ${stat('Massa muscular', mm ? numBR1(mm.muscular) + ' kg' : '—', mm ? 'Estimativa do exame' : 'Sem bioimpedância')}
+    ${stat('Treinos registrados', String(validas().length), 'Na sua conta')}</div>`;
+  if (!window.claude && !sb && validas().length && Date.now() - (LS.get('mt_backup_em', 0) || 0) > 14 * 864e5)
+    h += `<div class="card" style="margin-top:12px"><div class="row between"><div style="flex:1;min-width:0"><strong>Faça um backup</strong><div class="smalltxt">Seus treinos ficam só neste celular. Um arquivo de backup protege contra perda.</div></div><button class="btn small" data-a="backup">Baixar backup</button></div></div>`;
+  h += `<div class="sectionhead"><h2>${r ? 'Treino em andamento' : 'Seu próximo treino'}</h2><span class="pill">Flexível</span></div>`;
+  h += r ? cardAndamento(r) : cardTreino(prox, true);
+  const desde = Date.now() - 7 * 864e5, ss = validas().filter(s => ms(s.inicio) >= desde);
+  const ult = reg => { const s = validas().find(x => regioesSessao(x).includes(reg)); return s ? tempoDesde(ms(s.fim || s.inicio)) : 'nenhum ainda'; };
+  h += `<div class="card"><div class="row between"><h3 style="margin:0">Últimos 7 dias</h3><span class="pill">${ss.length} de ${prog().ordem.length} treinos</span></div>
+    <p class="smalltxt" style="margin-top:6px">${ss.reduce((n, s) => n + seriesFeitas(s), 0)} séries validadas. Último treino de cima: ${ult('sup')}. Último de pernas: ${ult('inf')}.</p>
+    ${barras(volume(desde), GRUPOS_GRANDES)}<p class="smalltxt" style="margin-top:8px">A barra cheia equivale a ${META_SEMANA} séries na semana, a meta para hipertrofia.</p></div>`;
+  h += `<div class="sectionhead"><h2>Atalhos</h2></div><div class="grid">
+    ${atalho('workouts', '🏋️', 'Meus treinos', 'Fichas e execução')}${atalho('progress', '📈', 'Minha evolução', 'Cargas e indicadores')}
+    ${atalho('library', '🎬', 'Biblioteca', 'Exercícios e demonstrações')}${atalho('assistant', '✦', 'Assistente IA', 'Perguntas e análises')}</div>`;
+  const prazo = p.prazo || 8, primeira = doPrograma().slice(-1)[0];
+  const semana = primeira ? Math.min(prazo, Math.floor((Date.now() - ms(primeira.inicio)) / (7 * 864e5)) + 1) : null;
+  h += `<div class="card" style="margin-top:12px"><div class="row between"><h3 style="margin:0">Objetivo atual</h3><span class="pill">${semana ? `Semana ${semana} de ${prazo}` : `${prazo} semanas`}</span></div>
+    <strong style="display:block;margin-top:6px">${esc(p.objetivo || 'Defina seu objetivo no perfil')}</strong>
+    <p class="smalltxt" style="margin-top:6px">Acompanhar peso, cintura, composição corporal, força e recuperação. As recomendações não substituem avaliação profissional.</p></div>`;
+  return h;
+}
+
+function vWorkouts() {
+  const P = prog();
+  let h = `<div class="eyebrow">Plano de treinamento</div><h2>Meus treinos</h2>
+    <p class="muted">Sem calendário fixo: faça o próximo treino quando tiver disponibilidade e estiver recuperado. A sequência avança após concluir e salvar cada sessão.${P.ordem.length === 4 ? ' Sugestão: segunda, terça, quarta e fim de semana.' : ''}</p>`;
+  const r = rascunho();
+  if (r) h += `<div class="sectionhead" style="margin-top:4px"><h2>Treino em andamento</h2></div>` + cardAndamento(r) + `<p class="smalltxt">Termine ou descarte o treino em andamento para começar outro.</p>`;
+  h += P.ordem.map(t => cardTreino(t, false)).join('');
+  h += `<div class="card" style="margin-top:6px"><div class="row between"><div><div class="eyebrow">Programa atual</div><strong>${esc(P.nome)}</strong><div class="smalltxt">${P.dias} treinos por semana, ${P.duracao}</div></div>
+      <button class="btn secondary small" data-go="recomecar">↺ Começar do zero</button></div></div>
+    <div class="card"><h3>Como funciona</h3><p class="smalltxt">Os campos já vêm preenchidos com a carga sugerida: confira e valide. O descanso começa sozinho com o tempo certo de cada exercício. A musculação vem primeiro, depois o cardio. O histórico fica salvo na sua conta e aparece em qualquer aparelho.</p></div>`;
+  return h;
+}
+
+/* ----- histórico e calendário ----- */
+function detalhe(s) {
+  const c = s.cardio || {};
+  let h = `<div style="margin-top:12px"><p class="smalltxt">${esc(nomeTreino(s))}. ${s.esforco ? `Esforço: ${esc(s.esforco)}. ` : (s.rpe != null ? `Esforço ${s.rpe}/10. ` : '')}${c.seg ? `Cardio ${c.modo === 'intervalado' ? 'intercalado' : 'contínuo'}: ${cardioTxt(c.seg)}.` : 'Sem cardio registrado.'}</p>`;
+  listaDe(s).forEach(id => {
+    const e = s.ex && s.ex[id]; if (!e) return;
+    const ok = okSets(e);
+    if (!ok.length && !e.desc) return;
+    h += `<div class="hist-ex"><strong>${esc(nomeEx(id))}</strong><div class="smalltxt">${ok.length ? esc(fmtSets(ok)) : 'não feito'}${e.dif ? `. ${esc(e.dif)}.` : ''}</div>${e.desc ? `<em>${esc(e.desc)}</em>` : ''}</div>`;
+  });
+  h += `${c.obs ? `<p class="smalltxt">Cardio: ${esc(c.obs)}</p>` : ''}${s.obs ? `<p>${esc(s.obs)}</p>` : ''}<button class="lnk perigo" data-a="apagar" data-id="${esc(s.id)}">Apagar este treino</button></div>`;
+  return h;
+}
+function entradaHistorico(s) {
+  const f = contarFeitas(s), pct = f.total ? Math.round(f.ok / f.total * 100) : 0;
+  return `<details class="card hist" ${S.aberto === s.id ? 'open' : ''} data-hist="${esc(s.id)}"><summary><div class="row between"><strong>${dataLonga(s.inicio)} · Treino ${esc(s.treino)}</strong><strong style="color:${pct === 100 ? 'var(--green)' : 'var(--peach)'}">${pct}%</strong></div>
+    <div class="progress" style="margin:8px 0 6px"><span class="${pct === 100 ? 'cheio' : ''}" style="width:${pct}%"></span></div><div class="smalltxt">${f.ok}/${f.total} séries concluídas · ${duracao(s)}${s.importado ? ' · app anterior' : ''}</div></summary>${detalhe(s)}</details>`;
+}
+function calendario() {
+  const hoje = new Date(), base = S.cal ? new Date(S.cal + '-01T12:00:00') : new Date(hoje.getFullYear(), hoje.getMonth(), 1, 12);
+  const y = base.getFullYear(), m = base.getMonth(), porDia = {};
+  validas().forEach(s => { const k = diaLocal(ms(s.inicio)); (porDia[k] = porDia[k] || []).push(s); });
+  const primeiro = new Date(y, m, 1).getDay(), dias = new Date(y, m + 1, 0).getDate(), hojeK = diaLocal(Date.now());
+  let h = `<div class="card"><div class="row between"><button class="btn ghost small" data-a="cal" data-d="-1" aria-label="Mês anterior">‹</button>
+    <strong style="text-transform:capitalize">${base.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</strong>
+    <button class="btn ghost small" data-a="cal" data-d="1" aria-label="Próximo mês">›</button></div><div class="cal">`;
+  h += ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map(d => `<div class="calhead" aria-hidden="true">${d}</div>`).join('');
+  for (let i = 0; i < primeiro; i++) h += `<div class="calcell vazio" aria-hidden="true"></div>`;
+  for (let d = 1; d <= dias; d++) {
+    const k = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`, n = (porDia[k] || []).length;
+    h += `<button class="calcell${k === hojeK ? ' today' : ''}${k === S.diaSel ? ' selected' : ''}${n ? ' has-event' : ''}" data-a="dia" data-k="${k}" aria-label="Dia ${d}${n ? `, ${n} ${n > 1 ? 'treinos' : 'treino'}` : ''}">${d}</button>`;
+  }
+  h += `</div></div>`;
+  if (S.diaSel) {
+    const ss = porDia[S.diaSel] || [];
+    h += `<div class="card"><h3>${dataISO(S.diaSel)}</h3>${ss.length ? ss.map(x => `<button class="btn secondary full" style="margin-top:6px;text-align:left" data-a="abrir" data-id="${esc(x.id)}">Treino ${esc(x.treino)} — ${esc(nomeTreino(x))}: ${seriesFeitas(x)} séries</button>`).join('') : '<p class="smalltxt">Nenhum treino neste dia.</p>'}</div>`;
+  }
+  return h;
+}
+function vHistory() {
+  const ss = validas();
+  return `<div class="eyebrow">Registros completos</div><h2>Histórico de treinos</h2><p class="muted">Toque em um dia do calendário ou em uma sessão para abrir todos os detalhes.</p>`
+    + calendario() + (ss.length ? ss.map(entradaHistorico).join('') : `<div class="card">Nenhum treino registrado ainda.</div>`);
+}
+
+/* ----- sessão ----- */
+function minutosDecorridos() { return S.atual ? Math.max(0, Math.floor((Date.now() - ms(S.atual.inicio)) / 60000)) : 0; }
+const ICON_CAM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+function fotoEx(id) {
+  const f = midia().fotos[id];
+  if (f && srcFoto(f)) return `<button class="foto tem" data-a="foto-ver" data-ex-id="${id}" aria-label="Ver foto do aparelho"><img src="${esc(srcFoto(f))}" alt="Foto do aparelho: ${esc(nomeEx(id))}" loading="lazy"></button>`;
+  if (f) return `<div class="foto" data-foto-carregando aria-label="Carregando a foto">${ICON_CAM}<span>…</span></div>`;
+  if (!podeFoto()) return `<div class="foto" aria-hidden="true">${ICON_CAM}<span>Sem foto</span></div>`;
+  return `<label class="foto" aria-label="Tirar foto do aparelho">${ICON_CAM}<span>Foto</span><input type="file" accept="image/*" data-foto-ex="${id}" hidden></label>`;
+}
+const linkVideo = id => midia().videos[id] || `https://www.youtube.com/results?search_query=${encodeURIComponent(nomeEx(id) + ' execução #shorts')}`;
+function cardEx(id) {
+  const s = S.atual, d = EX[id] || { nome: nomeEx(id), equip: '', g: [], dica: '' }, e = s.ex[id], p = e.p || prescricao(id, s.treino);
+  const hist = historicoEx(id), ult = hist[hist.length - 1], feitos = okSets(e).length, done = feitos === e.sets.length && e.sets.length > 0, orig = textoOrigem(e);
+  let h = `<div class="exercise ${done ? 'done' : ''}" data-ex="${id}">
+    <div class="ex-topo">${fotoEx(id)}<div class="ex-info">
+      <div class="ex-cab"><div class="exercise-title">${esc(d.nome)}</div><span class="ex-cont" data-cont>${feitos}/${e.sets.length}</span></div>
+      <div class="exercise-meta" style="margin-bottom:0">${p.series} séries · ${p.min}–${p.max} reps · descanso ${mmss(p.rest)}<br>${esc(d.g.join(', '))}${d.equip ? ' · ' + esc(d.equip.toLowerCase()) : ''}</div>
+      <a class="btn-video" href="${esc(linkVideo(id))}" target="_blank" rel="noopener">▶ Ver vídeo</a></div></div>
+    ${orig ? `<p class="nota-ini">${esc(orig)}</p>` : ''}
+    <details class="lista-ex" style="margin-top:4px"><summary>Como executar</summary><p class="exercise-details" style="margin-top:4px">${esc(d.dica)}</p></details>
+    ${ult ? `<p class="ultima">Última vez (${dataCurta(ult.d)}): ${esc(fmtSets(ult.sets))}${ult.dif ? `, ${ult.dif.toLowerCase()}` : ''}</p>` : ''}
+    <div class="setcab" aria-hidden="true"><span></span><span>Carga (kg)</span><span>Reps</span><span></span><span></span></div>`;
+  e.sets.forEach((st, k) => {
+    const cls = f => (st.ok ? 'class="locked" readonly' : st['m' + f] ? '' : 'class="sug"');
+    h += `<div class="setrow" data-k="${k}"><span class="sn">S${k + 1}</span>
+      <input inputmode="decimal" data-f="c" value="${esc(numBR(st.c))}" placeholder="kg" aria-label="Carga da série ${k + 1}" ${cls('c')}>
+      <input inputmode="numeric" data-f="r" value="${st.r ?? ''}" placeholder="reps" aria-label="Repetições da série ${k + 1}" ${cls('r')}>
+      <button class="set-rest" data-a="descanso" aria-label="Iniciar descanso de ${mmss(p.rest)}">⏱ ${mmss(p.rest)}</button>
+      <button class="validate-set" data-a="ok" aria-pressed="${!!st.ok}" aria-label="Validar série ${k + 1}">✓</button></div>`;
+  });
+  h += `<div class="acoes-serie"><button class="add-set" data-a="mais-serie">+ Adicionar série</button><button class="validar-todas" data-a="todas" ${done ? 'disabled' : ''}>${done ? '✓ Todas validadas' : '✓ Validar todas'}</button></div>`;
+  if (e.enviado) h += `<div class="enviado"><span>✓ ${esc(e.dif || 'Registrado')}${e.desc ? ' · ' + esc(e.desc) : ''}</span><button data-a="editar-envio">Editar</button></div>`;
+  else {
+    const aberta = S.notas.has(id) || !!e.desc;
+    h += `<div class="dif-bloco"><div class="smalltxt" style="font-size:13px;margin-bottom:6px">Como foi esse exercício?</div>
+      <div class="dif" role="group" aria-label="Dificuldade de ${esc(d.nome)}">${['Fácil', 'Moderado', 'Difícil'].map(n => `<button data-a="dif" data-n="${n}" aria-pressed="${e.dif === n}">${n}</button>`).join('')}</div>
+      ${aberta ? `<div class="field" style="margin-top:8px"><textarea rows="2" data-desc maxlength="300" placeholder="Anotação importante: ajuste do aparelho, dor, sensação…" aria-label="Anotação sobre ${esc(d.nome)}">${esc(e.desc || '')}</textarea></div>` : `<button class="lnk" style="margin-top:6px" data-a="nota-abrir">+ Anotação importante</button>`}
+      <button class="btn full" style="margin-top:8px" data-a="enviar">Enviar</button></div>`;
+  }
+  return h + `</div>`;
+}
+function progressoTexto(s) {
+  const f = contarFeitas(s), c = s.cardio || {}, cardioOk = c.feito ? 1 : 0, forcaOk = s.forcaOk ? 1 : 0;
+  const pct = Math.round((f.ok + cardioOk + forcaOk) / (f.total + 2) * 100);
+  return { pct, txt: `${f.ok}/${f.total} séries · musculação ${forcaOk ? 'concluída' : 'pendente'} · cardio ${cardioOk ? 'concluído' : c.pulado ? 'pulado' : 'pendente'}` };
+}
+function atualizarProgresso() {
+  if (!S.atual) return;
+  const p = progressoTexto(S.atual), a = $('#prog-pct'), b = $('#prog-bar'), t = $('#prog-txt');
+  if (a) a.textContent = p.pct + '%'; if (b) { b.style.width = p.pct + '%'; b.classList.toggle('cheio', p.pct === 100); } if (t) t.textContent = p.txt;
+}
+function vSession() {
+  const s = S.atual, tr = treinoDef(s.treino), pr = progressoTexto(s);
+  let h = `<h2 style="margin-top:0">Treino ${esc(s.treino)} — ${esc(nomeTreino(s))}</h2><p class="muted">${esc(tr ? tr.desc : '')}</p>
+    <div class="card"><div class="row between"><strong>Progresso da sessão</strong><strong id="prog-pct">${pr.pct}%</strong></div>
+      <div class="progress" style="margin-top:9px"><span id="prog-bar" class="${pr.pct === 100 ? 'cheio' : ''}" style="width:${pr.pct}%"></span></div><div class="smalltxt" id="prog-txt" style="margin-top:7px">${pr.txt}</div></div>
+    <div class="card"><div class="row between"><div><span class="pill">Etapa 1</span><h3 style="margin-top:8px">Musculação — primeiro</h3></div><span class="pill">Força e hipertrofia · antes do cardio</span></div>
+      <p class="smalltxt">Valores tracejados são sugestões: confira, ajuste se precisar e valide. O descanso começa sozinho, cerca de 2 a 3 min nos multiarticulares e 60 a 90 s nos isoladores.</p>
+      <p class="aviso">Tontura, dor ou aperto no peito, falta de ar fora do normal ou dor de cabeça forte: pare o treino.</p>
+      <div class="exercise-list">${s.lista.map(id => (s.ex[id] ? cardEx(id) : '')).join('')}</div>
+      <button class="complete-session ${s.forcaOk ? 'done' : ''}" data-a="forca">${s.forcaOk ? '✓ Musculação concluída' : 'Concluir sessão de musculação'}</button></div>
+    <div class="card" id="cardio-card">${cardioInner()}</div>
+    <div class="card"><div class="field"><span>Como foi a sessão?</span><div class="esforco" role="group" aria-label="Esforço da sessão">${ESFORCOS.map(([n]) => `<button data-a="esforco" data-n="${n}" aria-pressed="${s.esforco === n}">${n}</button>`).join('')}</div></div>
+      <div class="field" style="margin-top:10px"><label for="obs">Observações gerais</label><textarea id="obs" data-obs rows="3" placeholder="Energia, desconforto, sono, disposição…">${esc(s.obs || '')}</textarea></div>
+      <button class="btn full" style="margin-top:14px" data-a="salvar">Finalizar e salvar treino</button>
+      <button class="lnk" style="margin-top:8px" data-a="descartar">Descartar este treino</button></div>`;
+  return h;
+}
+
+/* ----- cardio ----- */
+const cardioDecorrido = c => (c.acumulado || 0) + (c.rodando && c.inicioMs ? (Date.now() - c.inicioMs) / 1000 : 0);
+function cardioFase(c, seg) {
+  const f = Math.max(0.25, num(c.forte) || 1) * 60, l = Math.max(0.25, num(c.leve) || 2) * 60, ciclo = f + l, pos = seg % ciclo, rodada = Math.floor(seg / ciclo) + 1;
+  return pos < f ? { fase: 'forte', resta: f - pos, rodada } : { fase: 'leve', resta: ciclo - pos, rodada };
+}
+function cardioInner() {
+  const s = S.atual, c = s.cardio, seg = cardioDecorrido(c), inter = c.modo === 'intervalado', iniciado = seg > 0 || c.rodando, liberado = s.forcaOk;
+  return `<div class="row between"><div><span class="pill">Etapa 2</span><h3 style="margin-top:8px">Cardio — por último</h3></div><span class="pill">Tempo livre</span></div>
+    <p class="smalltxt">${liberado ? 'Escolha o formato e registre o tempo; não há duração obrigatória. Ritmo em que dá para conversar.' : 'A etapa de cardio é liberada depois que você concluir a musculação.'}</p>
+    <div class="${liberado ? '' : 'bloqueado'}">
+      <div class="row" style="gap:8px;margin:12px 0"><button class="btn small ${inter ? 'secondary' : ''}" data-a="c-modo" data-m="continuo" ${iniciado ? 'disabled' : ''}>Contínuo</button><button class="btn small ${inter ? '' : 'secondary'}" data-a="c-modo" data-m="intervalado" ${iniciado ? 'disabled' : ''}>Intercalado</button></div>
+      ${inter ? `<div class="grid"><div class="field"><label for="c-forte">Minutos correndo</label><input id="c-forte" inputmode="decimal" data-cf="forte" value="${esc(numBR(c.forte))}" ${iniciado ? 'disabled' : ''}></div>
+        <div class="field"><label for="c-leve">Minutos caminhando</label><input id="c-leve" inputmode="decimal" data-cf="leve" value="${esc(numBR(c.leve))}" ${iniciado ? 'disabled' : ''}></div></div>
+        <p class="aviso">Intercalado só com liberação do médico. Vale também bike forte e leve.</p>` : `<div class="card" style="margin:0;background:var(--panel2)"><strong>Ritmo contínuo</strong><p class="smalltxt" style="margin:4px 0 0">Mantenha o ritmo que for confortável para você.</p></div>`}
+      <div class="timer-card" id="c-caixa"><div class="eyebrow" id="c-label">Tempo decorrido</div><div class="timer" id="c-tempo">${mmss(seg).padStart(5, '0')}</div><div class="smalltxt" id="c-hint">Pronto para começar</div>
+        <div class="row" style="justify-content:center;margin-top:12px"><button class="btn small" data-a="c-play" ${c.feito ? 'disabled' : ''}>${c.rodando ? '❚❚ Pausar' : seg > 0 ? '▶ Retomar' : '▶ Iniciar'}</button>${seg > 0 && !c.rodando && !c.feito ? `<button class="btn ghost small" data-a="c-zerar">↺ Zerar</button>` : ''}</div></div>
+      <div class="field" style="margin-top:10px"><label for="c-obs">Observação do cardio</label><input id="c-obs" data-cf="obs" value="${esc(c.obs || '')}" placeholder="Ex.: velocidade, inclinação, sensação…"></div>
+      <button class="complete-session ${c.feito ? 'done' : ''}" data-a="c-concluir">${c.feito ? `✓ Cardio concluído (${cardioTxt(c.seg)})` : 'Confirmar cardio concluído'}</button>
+      ${c.feito ? '' : `<button class="lnk" style="margin-top:6px" data-a="c-pular">${c.pulado ? 'Cardio marcado como pulado' : 'Pular cardio hoje'}</button>`}
+    </div>`;
+}
+function renderCardio() { const el = $('#cardio-card'); if (el) el.innerHTML = cardioInner(); atualizarCardioDOM(); atualizarProgresso(); }
+let faseAnterior = null;
+function atualizarCardioDOM() {
+  const c = S.atual && S.atual.cardio, el = $('#c-tempo');
+  if (!c || !el) return;
+  const seg = c.feito ? c.seg : cardioDecorrido(c);
+  el.textContent = mmss(seg).padStart(5, '0');
+  const lab = $('#c-label'), hint = $('#c-hint'), caixa = $('#c-caixa');
+  if (c.modo !== 'intervalado') {
+    lab.textContent = 'Tempo decorrido'; caixa.dataset.fase = '';
+    hint.textContent = c.feito ? 'Cardio registrado' : c.rodando ? 'Em andamento' : seg > 0 ? 'Pausado' : 'Pronto para começar';
+    return;
+  }
+  const f = cardioFase(c, seg);
+  lab.textContent = f.fase === 'forte' ? 'Correndo' : 'Caminhando';
+  caixa.dataset.fase = c.rodando ? f.fase : '';
+  hint.textContent = c.feito ? 'Cardio registrado' : `Rodada ${f.rodada} · troca em ${mmss(Math.ceil(f.resta))}`;
+  if (c.rodando && faseAnterior && faseAnterior !== f.fase) {
+    try { navigator.vibrate && navigator.vibrate([300, 120, 300]); } catch (e) {}
+    bip(0); bip(0.4); toast(f.fase === 'forte' ? 'Hora de correr' : 'Hora de caminhar');
+  }
+  faseAnterior = c.rodando ? f.fase : null;
+}
+
+/* ----- evolução ----- */
+function grafico(pontos, o) {
+  if (pontos.length < 2) return `<p class="smalltxt">${esc(o.vazio)}</p>`;
+  const W = 320, H = 150, P = { l: 44, r: 10, t: 12, b: 22 };
+  const ys = pontos.map(p => p.y), dMin = Math.min(...ys), dMax = Math.max(...ys);
+  let yMin = dMin, yMax = dMax; if (yMax === yMin) { yMax += 1; yMin -= 1; }
+  const pad = (yMax - yMin) * 0.12; yMin -= pad; yMax += pad;
+  const xMin = pontos[0].x, xMax = pontos[pontos.length - 1].x;
+  const X = x => P.l + (xMax === xMin ? (W - P.l - P.r) / 2 : (x - xMin) / (xMax - xMin) * (W - P.l - P.r));
+  const Y = y => P.t + (1 - (y - yMin) / (yMax - yMin)) * (H - P.t - P.b), f = v => v.toFixed(1);
+  return `<svg class="graf" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.rotulo)}">
+    <line x1="${P.l}" y1="${H - P.b}" x2="${W - P.r}" y2="${H - P.b}" class="eixo"/>
+    <polyline points="${pontos.map(p => `${f(X(p.x))},${f(Y(p.y))}`).join(' ')}" class="ln"/>
+    ${pontos.map(p => `<circle cx="${f(X(p.x))}" cy="${f(Y(p.y))}" r="3.5" class="pt"/>`).join('')}
+    <text x="${P.l - 6}" y="${f(Y(dMax) + 4)}" text-anchor="end" class="tx">${esc(o.fmt(dMax))}</text>
+    <text x="${P.l - 6}" y="${f(Y(dMin) + 4)}" text-anchor="end" class="tx">${esc(o.fmt(dMin))}</text>
+    <text x="${P.l}" y="${H - 6}" class="tx">${dataCurta(xMin)}</text><text x="${W - P.r}" y="${H - 6}" text-anchor="end" class="tx">${dataCurta(xMax)}</text></svg>`;
+}
+const botaoFoto = pre => (S.fotoOk ? `<label class="btn secondary small" style="display:inline-flex;align-items:center;cursor:pointer">📷 Ler foto do exame<input type="file" accept="image/*" data-foto="${pre}" hidden></label><p class="smalltxt" data-foto-st="${pre}" style="margin-top:6px">Tire uma foto ou print do laudo: os valores são preenchidos para você conferir.</p>` : '');
+function camposBio(pre, valores) {
+  return `<div class="fields">${CAMPOS_BIO.map(([k, n]) => `<div class="field"><label for="${pre}${k}">${n}</label><input id="${pre}${k}" inputmode="decimal" value="${esc(numBR(valores && valores[k]))}"></div>`).join('')}</div>`;
+}
+function vProgress() {
+  const lista = medidasTodas(), ult = lista[lista.length - 1], prim = lista.length > 1 ? lista[0] : null;
+  const mp = ultimaCom('peso'), mg = ultimaCom('gordura');
+  const delta = (k, u) => { if (!ult || ult[k] == null) return ''; const b = lista.find(m => m !== ult && m[k] != null); if (!b) return ''; const d = ult[k] - b[k]; return `${d > 0 ? '+' : d < 0 ? '−' : ''}${numBR1(Math.abs(d))}${u} desde ${dataISO(b.data).slice(3)}`; };
+  let h = `<div class="eyebrow">Dados e resultados</div><h2>Minha evolução</h2><div class="grid">
+    <div class="card"><div class="eyebrow">Peso atual</div><div class="stat">${mp ? numBR1(mp.peso) + ' kg' : '—'}</div><div class="smalltxt">${delta('peso', ' kg') || (mp ? 'Em ' + dataISO(mp.data) : 'Sem medição')}</div></div>
+    <div class="card"><div class="eyebrow">Gordura corporal</div><div class="stat">${mg ? numBR1(mg.gordura) + '%' : '—'}</div><div class="smalltxt">${delta('gordura', ' pontos') || (mg ? 'Em ' + dataISO(mg.data) : 'Sem medição')}</div></div></div>`;
+  const pesos = lista.filter(m => m.peso != null).slice(-8);
+  h += `<div class="card" style="margin-top:12px"><h3>Histórico de peso</h3>`;
+  if (pesos.length) {
+    const vmin = Math.min(...pesos.map(x => x.peso)) - 2, vmax = Math.max(...pesos.map(x => x.peso)) + 2;
+    h += `<div class="chart" role="img" aria-label="Peso nas últimas medições">${pesos.map(x => `<div class="barwrap"><div class="bar" style="height:${Math.max(8, (x.peso - vmin) / (vmax - vmin) * 95)}px"></div><div class="barlabel">${dataISO(x.data).slice(0, 5)}</div><div class="barlabel">${numBR1(x.peso)}</div></div>`).join('')}</div>`;
+  } else h += `<p class="smalltxt">Adicione medições para montar o gráfico.</p>`;
+  h += `<p class="smalltxt" style="margin-top:8px">${prim ? `Medições de ${dataISO(prim.data)} a ${dataISO(ult.data)}. ` : ''}Adicione novas medições para ampliar o gráfico.</p></div>`;
+  const bio = [...lista].reverse().find(m => m.magra != null || m.muscular != null || m.gorda != null);
+  h += `<div class="card"><h3>Última bioimpedância</h3>${bio ? `<p class="smalltxt">${dataISO(bio.data)}</p>` + [['gorda', 'Massa gorda', ' kg'], ['magra', 'Massa magra', ' kg'], ['muscular', 'Massa muscular', ' kg'], ['agua', 'Água corporal', ' L'], ['visceral', 'Gordura visceral', '']].filter(([k]) => bio[k] != null).map(([k, n, u]) => `<div class="linha-info"><span class="muted">${n}</span><strong>${numBR1(bio[k])}${u}</strong></div>`).join('') : '<p class="smalltxt">Nenhuma bioimpedância registrada.</p>'}</div>`;
+  h += `<div class="card"><h3>Adicionar medição</h3>${botaoFoto('m-')}
+    <div class="fields" style="margin-top:8px"><div class="field"><label for="m-data">Data</label><input type="date" id="m-data" value="${hojeISO()}"></div><div class="field"><label for="m-cintura">Cintura (cm)</label><input id="m-cintura" inputmode="decimal" placeholder="Opcional"></div></div>
+    <div style="margin-top:9px">${camposBio('m-', null)}</div>
+    <button class="btn full" style="margin-top:12px" data-a="med-salvar">Salvar medição</button>
+    ${lista.length ? `<details class="lista-ex"><summary>Medições registradas (${lista.length})</summary><ul>${lista.slice().reverse().map(m => `<li><span>${dataISO(m.data)}: ${[m.peso != null ? numBR1(m.peso) + ' kg' : '', m.cintura != null ? numBR1(m.cintura) + ' cm' : '', m.gordura != null ? numBR1(m.gordura) + '%' : ''].filter(Boolean).join(', ')}</span>${m.doPerfil ? '<span>perfil</span>' : `<button class="lnk perigo" data-a="med-apagar" data-id="${esc(m.id)}">Apagar</button>`}</li>`).join('')}</ul></details>` : ''}</div>`;
+  h += secaoForca();
+  h += `<div class="card"><h3>Volume dos últimos 7 dias</h3><p class="smalltxt">Séries validadas por grupo muscular; o trabalho indireto conta meia série. A barra cheia equivale a ${META_SEMANA} séries.</p>${barras(volume(Date.now() - 7 * 864e5), GRUPOS)}</div>`;
+  const ss14 = validas().filter(s => ms(s.inicio) >= Date.now() - 14 * 864e5);
+  if (ss14.length) {
+    const curtos = intervalosCurtos(ss14), desc = ss14.reduce((n, s) => n + Object.values(s.ex || {}).filter(e => e.desc && e.desc.trim()).length, 0);
+    h += `<div class="card"><h3>Recuperação, últimos 14 dias</h3><p class="smalltxt">${ss14.length} treinos, esforço médio ${media(ss14, 'rpe')}/10.
+      ${curtos.length ? `${curtos.length} ${curtos.length > 1 ? 'treinos' : 'treino'} com menos de 48 h depois de outro dos mesmos músculos.` : 'Todos os treinos respeitaram 48 h entre os mesmos músculos.'}
+      ${desc ? `${desc} ${desc > 1 ? 'comentários' : 'comentário'} de dor ou desconforto.` : 'Nenhuma dor ou desconforto anotado.'}</p></div>`;
+  }
+  const recentes = validas().slice(0, 5);
+  h += `<div class="card"><div class="row between"><h3 style="margin:0">Histórico de sessões</h3><button class="lnk" data-go="history">Ver tudo</button></div>
+    ${recentes.length ? recentes.map(s => { const f = contarFeitas(s), pct = f.total ? Math.round(f.ok / f.total * 100) : 0; return `<div style="padding:9px 0;border-bottom:1px solid var(--line)"><div class="row between"><strong>${dataLonga(s.inicio)} · Treino ${esc(s.treino)}</strong><strong style="color:${pct === 100 ? 'var(--green)' : 'var(--peach)'}">${pct}%</strong></div><div class="progress"><span class="${pct === 100 ? 'cheio' : ''}" style="width:${pct}%"></span></div><div class="smalltxt">${f.ok}/${f.total} séries concluídas</div></div>`; }).join('') : '<p class="smalltxt">Nenhuma sessão salva ainda.</p>'}</div>`;
+  return h;
+}
+function exerciciosComHistorico() {
+  const ids = [], vistos = new Set(), add = id => { if (!vistos.has(id)) { vistos.add(id); ids.push(id); } };
+  prog().ordem.forEach(t => itensTreino(t).forEach(it => add(it.id)));
+  validas().forEach(s => listaDe(s).forEach(add));
+  return ids.filter(id => historicoEx(id).length);
+}
+function secaoForca() {
+  const ids = exerciciosComHistorico();
+  let h = `<div class="card"><h3>Força por exercício</h3>`;
+  if (!ids.length) return h + `<p class="smalltxt">Aparece depois do primeiro treino registrado.</p></div>`;
+  if (!ids.includes(S.exForca)) S.exForca = ids[0];
+  const hist = historicoEx(S.exForca), u = hist[hist.length - 1];
+  const pts = hist.map(r => ({ x: ms(r.d), y: Math.max(...r.sets.map(e1rm)) })).filter(p => p.y > 0);
+  const sug = sugestao(S.exForca, prescricao(S.exForca, null));
+  h += `<div class="field"><select id="sel-forca" aria-label="Escolher exercício">${ids.map(id => `<option value="${id}" ${id === S.exForca ? 'selected' : ''}>${esc(nomeEx(id))}</option>`).join('')}</select></div>
+    <p class="smalltxt" style="margin-top:8px">Força estimada pela melhor série de cada sessão (carga e repetições combinadas).</p>`;
+  h += grafico(pts, { rotulo: 'Força estimada ao longo do tempo', fmt: v => Math.round(v) + ' kg', vazio: 'O gráfico aparece a partir de duas sessões com carga registrada.' });
+  return h + `<p class="ultima">Última vez (${dataCurta(u.d)}): ${esc(fmtSets(u.sets))}</p><p class="sug sug-${sug.tipo}">${esc(sug.texto)}</p></div>`;
+}
+
+/* ----- biblioteca ----- */
+function vLibrary() {
+  const usados = {};
+  prog().ordem.forEach(t => itensTreino(t).forEach(it => { (usados[it.id] = usados[it.id] || []).push(t); }));
+  const ids = Object.keys(EX).sort((a, b) => (usados[b] ? 1 : 0) - (usados[a] ? 1 : 0) || EX[a].nome.localeCompare(EX[b].nome, 'pt'));
+  const q = normalizar(S.busca), chave = id => normalizar([EX[id].nome, EX[id].equip, ...EX[id].g, ...(EX[id].gi || [])].join(' '));
+  let h = `<div class="eyebrow">Consulta e execução</div><h2>Biblioteca de exercícios</h2>
+    <input class="search" id="busca" type="search" placeholder="Buscar exercício, músculo ou aparelho…" value="${esc(S.busca)}" aria-label="Buscar exercício"><div style="margin-top:12px">`;
+  h += ids.map(id => {
+    const d = EX[id], ts = usados[id] || [];
+    return `<div class="card bib" data-busca="${esc(chave(id))}" ${q && !chave(id).includes(q) ? 'hidden' : ''}>
+      <div class="ex-topo">${fotoEx(id)}<div class="ex-info"><strong>${esc(d.nome)}</strong>
+      <div class="row" style="gap:6px;margin:6px 0">${ts.map(t => `<span class="pill">Treino ${t}</span>`).join('')}${ts.length ? '' : '<span class="pill" style="opacity:.7">Fora da ficha atual</span>'}</div>
+      <a class="btn-video" style="margin-top:0" href="${esc(linkVideo(id))}" target="_blank" rel="noopener">▶ ${midia().videos[id] ? 'Ver seu vídeo' : 'Ver vídeos curtos'}</a></div></div>
+      <div class="smalltxt">${esc(d.g.join(', '))} · ${esc(d.equip)} · ${d.series} × ${d.min}–${d.max} reps · descanso ${mmss(d.rest)}${(d.gi || []).length ? ` · também trabalha ${esc(d.gi.join(', ').toLowerCase())}` : ''}</div>
+      <p class="exercise-details" style="margin-top:6px">${esc(d.dica)}</p>
+      <details class="lista-ex"><summary>${midia().videos[id] ? 'Trocar o vídeo deste exercício' : 'Fixar um vídeo para este exercício'}</summary>
+        <div class="field" style="margin-top:6px"><input id="v-${id}" type="url" inputmode="url" placeholder="Cole o link do Short ou do vídeo do YouTube" value="${esc(midia().videos[id] || '')}"></div>
+        <div class="row" style="margin-top:6px"><button class="btn small" data-a="video-salvar" data-id="${id}">Salvar vídeo</button>${midia().videos[id] ? `<button class="lnk" data-a="video-limpar" data-id="${id}">Voltar para a busca</button>` : ''}</div></details></div>`;
+  }).join('');
+  h += `<div class="empty card" id="busca-vazia" ${ids.some(id => !q || chave(id).includes(q)) ? 'hidden' : ''}>Nenhum exercício encontrado.</div></div>
+    <div class="card"><p class="smalltxt" style="margin:0">Toque na foto para fotografar o aparelho da sua academia. O vídeo abre no app do YouTube; quando achar um bom, fixe o link no exercício. Confira a técnica com o professor antes de executar.</p></div>`;
+  return h;
+}
+
+/* ----- relatório e assistente ----- */
+function gerarRelatorio(dias) {
+  const agora = Date.now(), ini = agora - dias * 864e5, ss = validas().filter(s => ms(s.inicio) >= ini).sort(maisAntigo), p = perfil(), P = prog(), L = [];
+  L.push(`Meu Treino: relatório de ${dias} dias`, `Período: ${dataLonga(ini)} a ${dataLonga(agora)}`);
+  L.push(`Programa ${P.nome} (${P.ordem.map(t => `${t} ${P.treinos[t].nome}`).join(', ')}), sequência flexível`);
+  if (p.objetivo) L.push(`Objetivo: ${p.objetivo}`);
+  if (!ss.length) { L.push('', 'Nenhum treino registrado no período.'); return L.join('\n'); }
+  const cont = {}; ss.forEach(s => { cont[s.treino] = (cont[s.treino] || 0) + 1; });
+  const semanas = Math.max(1, (agora - ms(ss[0].inicio)) / (7 * 864e5));
+  L.push(`Sessões: ${ss.length} (${P.ordem.map(t => `${t}: ${cont[t] || 0}`).join(', ')}), média de ${fmt1(ss.length / semanas)} por semana`);
+  const esf = ss.filter(s => s.esforco).map(s => s.esforco);
+  if (esf.length) L.push(`Esforço percebido: ${esf.join(', ')} (média ${media(ss, 'rpe')}/10)`);
+  const cs = ss.filter(s => s.cardio && s.cardio.seg > 0), nInt = cs.filter(s => s.cardio.modo === 'intervalado').length;
+  if (cs.length) L.push(`Cardio: ${cardioTxt(cs.reduce((n, s) => n + s.cardio.seg, 0))} em ${cs.length} ${cs.length > 1 ? 'sessões' : 'sessão'}${nInt ? `, ${nInt} ${nInt > 1 ? 'intercaladas' : 'intercalada'}` : ''}${cs.filter(s => s.cardio.obs).length ? '; notas: ' + cs.filter(s => s.cardio.obs).map(s => `${dataCurta(s.inicio)} ${s.cardio.obs}`).join('; ') : ''}`);
+  const fmtMed = m => [['peso', 'peso', ' kg'], ['cintura', 'cintura', ' cm'], ['gordura', 'gordura', '%'], ['magra', 'massa magra', ' kg'], ['muscular', 'massa muscular', ' kg'], ['visceral', 'gordura visceral', '']].filter(([k]) => m[k] != null).map(([k, n, u]) => `${n} ${numBR1(m[k])}${u}`).join(', ');
+  const meds = medidasTodas().filter(m => Date.parse(m.data + 'T12:00:00') >= ini - 270 * 864e5);
+  if (meds.length) L.push(`Medições (últimos meses): ${meds.map(m => `${dataISO(m.data)} ${fmtMed(m)}`).join('; ')}`);
+  L.push('', 'Evolução por exercício (primeira e última sessão do período):');
+  [...new Set([...P.ordem.flatMap(t => itensTreino(t).map(x => x.id)), ...ss.flatMap(listaDe)])].forEach(id => {
+    const regs = ss.map(s => ({ d: s.inicio, sets: okSets(s.ex && s.ex[id]), dif: s.ex && s.ex[id] ? s.ex[id].dif : null })).filter(r => r.sets.length);
+    if (!regs.length) return;
+    const pr = prescricao(id, null), a = regs[0], u = regs[regs.length - 1], difs = regs.map(r => r.dif).filter(Boolean);
+    L.push(`- ${nomeEx(id)} (${pr.min}–${pr.max} reps): ${regs.length === 1 ? `${dataCurta(a.d)} ${fmtSets(a.sets)}` : `${dataCurta(a.d)} ${fmtSets(a.sets)} → ${dataCurta(u.d)} ${fmtSets(u.sets)}`}; ${regs.length} ${regs.length > 1 ? 'sessões' : 'sessão'}; como foi: ${difs.length ? difs.join(', ').toLowerCase() : 'não registrado'}; sugestão do app: ${sugestao(id, pr).tipo}`);
+  });
+  const dificeis = []; ss.forEach(s => listaDe(s).forEach(id => { if (s.ex[id] && s.ex[id].dif === 'Difícil') dificeis.push(`${nomeEx(id)} em ${dataCurta(s.inicio)}`); }));
+  L.push('', `Marcados como difícil: ${dificeis.length ? dificeis.join('; ') : 'nenhum'}`);
+  const desc = []; ss.forEach(s => listaDe(s).forEach(id => { const e = s.ex && s.ex[id]; if (e && e.desc && e.desc.trim()) desc.push(`- ${dataCurta(s.inicio)}, ${nomeEx(id)}: ${e.desc.trim()}`); }));
+  L.push('', 'Anotações importantes:', ...(desc.length ? desc : ['- nenhuma']));
+  const vol = volume(ini);
+  L.push('', 'Séries por semana (média do período; indireto conta meia série):', GRUPOS.filter(g => vol[g]).map(g => `${g} ${fmt1(vol[g] / semanas)}`).join(', '));
+  const curtos = intervalosCurtos(ss);
+  L.push('', `Recuperação: ${curtos.length ? curtos.map(c => `${c.reg === 'inf' ? 'pernas' : 'parte de cima'} com ${Math.round(c.h)} h de intervalo em ${dataCurta(c.d)}`).join('; ') : 'todos os treinos respeitaram 48 h entre os mesmos músculos'}`);
+  const obs = ss.filter(s => s.obs && s.obs.trim()).map(s => `- ${dataCurta(s.inicio)} (${s.treino}): ${s.obs.trim()}`);
+  if (obs.length) L.push('', 'Observações:', ...obs);
+  L.push('', 'Sessões:');
+  ss.forEach(s => L.push(`- ${dataLonga(s.inicio)}: treino ${s.treino}, ${duracao(s)}, ${seriesFeitas(s)} séries${s.esforco ? `, ${s.esforco.toLowerCase()}` : ''}${s.cardio && s.cardio.seg ? `, cardio ${cardioTxt(s.cardio.seg)}` : ''}${s.importado ? ' (app anterior)' : ''}`));
+  return L.join('\n');
+}
+function montarPrompt() {
+  const p = perfil();
+  return ['Você é um treinador de força experiente revisando os registros de treino de um aluno.',
+    'Responda em português do Brasil, em texto simples, sem markdown: parágrafos curtos e listas com hífen. No máximo 300 palavras.',
+    'Estrutura: 1) o que está indo bem; 2) ajustes para a próxima semana, com cargas por exercício quando os dados permitirem; 3) sinais de alerta de recuperação, se houver.',
+    'O aluno marca cada exercício como fácil, moderado ou difícil. Regras do programa: dupla progressão (subir carga só ao bater o topo da faixa em todas as séries com técnica); 2 a 3 repetições de sobra nas duas primeiras semanas e depois 1 a 2 nos isoladores; meta de cerca de 10 séries por grupo muscular por semana; 48 h entre treinos dos mesmos músculos; não recomendar falha nos exercícios grandes; cardio moderado depois da musculação.',
+    'Não dê diagnóstico médico. Se algo nos dados sugerir risco à saúde, recomende procurar o médico.',
+    `Aluno: ${p.idade ? p.idade + ' anos, ' : ''}experiência ${(p.experiencia || 'iniciante').toLowerCase()}${p.altura ? `, ${numBR(p.altura)} m de altura` : ''}.`,
+    `Dores, restrições e observações de saúde informadas: ${p.saude && p.saude.trim() ? p.saude.trim() : 'nenhuma'}`,
+    S.pergunta.trim() ? `Pergunta do aluno, responda com prioridade: ${S.pergunta.trim()}` : '',
+    '', 'Registros:', gerarRelatorio(S.periodo)].join('\n');
+}
+function vAssistant() {
+  const ia = S.ia, rodando = ia.estado === 'rodando';
+  return `<div class="eyebrow">Inteligência do Meu Treino</div><h2>Assistente inteligente</h2>
+    <div class="hero"><div style="font-size:28px" aria-hidden="true">✦</div><h1 style="font-size:24px">Seu copiloto de evolução</h1>
+      <p>Pergunte sobre seu treino e receba uma análise dos seus registros, ou gere um relatório para levar a outra conversa.</p><span class="pill ${sampleFn ? 'ok' : ''}">${sampleFn ? 'Conectado ao Claude' : 'Relatório para copiar'}</span></div>
+    <div class="card"><h3>O que você quer analisar?</h3>
+      <div class="field"><label for="perg">Sua pergunta</label><textarea id="perg" data-perg rows="4" placeholder="Ex.: estou evoluindo na remada, mas sinto fadiga no treino seguinte. O que devo observar?">${esc(S.pergunta)}</textarea></div>
+      <div class="row between" style="margin-top:10px"><span class="smalltxt">Período analisado</span><div class="seg" role="group" aria-label="Período"><button data-a="periodo" data-d="14" aria-pressed="${S.periodo === 14}">14 dias</button><button data-a="periodo" data-d="28" aria-pressed="${S.periodo === 28}">28 dias</button></div></div>
+      <div class="row" style="margin-top:12px">${sampleFn ? `<button class="btn" data-a="ia" ${rodando ? 'disabled' : ''}>${rodando ? 'Analisando…' : '✦ Analisar com o Claude'}</button>${rodando ? `<button class="btn secondary" data-a="ia-parar">Parar</button>` : ''}` : ''}<button class="btn ${sampleFn ? 'secondary' : ''}" data-a="relatorio">Gerar relatório</button></div>
+      <p class="smalltxt" id="ia-nota" style="margin-top:8px">${esc(ia.nota)}</p><div class="ia" id="ia-out">${esc(ia.texto)}</div>
+      <div ${S.relVisivel ? '' : 'hidden'} id="rel-area" style="margin-top:12px"><div class="field"><textarea id="rel" readonly rows="12" aria-label="Relatório">${esc(S.relVisivel ? gerarRelatorio(S.periodo) : '')}</textarea></div>
+        <div class="row" style="margin-top:8px"><button class="btn small" data-a="copiar">Copiar relatório</button>${podeBaixar() ? `<button class="btn secondary small" data-a="csv">Baixar CSV</button>` : ''}</div></div></div>
+    <div class="card"><h3>Futuras áreas de cuidado</h3>
+      <div class="linha-info"><span>Nutrição</span><span class="pill">Planejado</span></div>
+      <div class="linha-info"><span>Exames e bioimpedância</span><span class="pill ${S.fotoOk ? 'ok' : ''}">${S.fotoOk ? 'Leitura por foto' : 'Em evolução'}</span></div>
+      <div class="linha-info"><span>Agenda médica</span><span class="pill">Planejado</span></div>
+      <div class="linha-info"><span>Bem-estar e ansiedade</span><span class="pill">Planejado</span></div></div>`;
+}
+const MSG_SAMPLE = { cancelled: '', not_granted: 'O uso do Claude não foi autorizado neste app.', sampling_disabled: 'O Claude não está disponível nesta conta.', rate_limited: 'Muitos pedidos seguidos. Tente de novo daqui a pouco.', session_expired: 'Entre de novo na sua conta do Claude.', refused: 'O Claude não respondeu a esse pedido. Reformule.', prompt_too_large: 'Dados demais de uma vez. Use o período de 14 dias.', image_rejected: 'Não consegui usar essa imagem. Tente outra foto, mais nítida.', invalid_json: 'Não consegui ler os valores. Preencha à mão.' };
+async function analisar() {
+  if (!sampleFn || S.ia.estado === 'rodando') return;
+  const ctl = new AbortController();
+  S.ia = { texto: '', estado: 'rodando', ctl, nota: 'Pensando…' };
+  if (S.page === 'assistant') render();
+  const atualizar = () => { const o = $('#ia-out'), n = $('#ia-nota'); if (o) o.textContent = S.ia.texto; if (n) n.textContent = S.ia.nota; };
+  try {
+    const r = await sampleFn(montarPrompt(), { signal: ctl.signal, onText: ({ text }) => { S.ia.texto = text; S.ia.nota = ''; atualizar(); } });
+    S.ia.texto = r.text; S.ia.nota = r.truncated ? 'A resposta foi cortada. Faça uma pergunta mais específica.' : '';
+  } catch (e) {
+    const code = e && e.code;
+    S.ia.texto = (e && e.text) || '';
+    if (['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(code)) sampleFn = null;
+    S.ia.nota = MSG_SAMPLE[code] ?? 'A análise falhou. Tente de novo.';
+  } finally {
+    S.ia.estado = 'idle'; S.ia.ctl = null;
+    if (S.page === 'assistant') render();
+  }
+}
+async function lerExame(arquivo, pre) {
+  if (!sampleFn || !arquivo) return;
+  const st = document.querySelector(`[data-foto-st="${pre}"]`);
+  if (st) st.textContent = 'Lendo o exame…';
+  try {
+    const d = await sampleFn.json('A imagem é um laudo de bioimpedância ou de balança de composição corporal. Extraia os valores e responda só com um objeto JSON com as chaves: data (AAAA-MM-DD ou null), peso (kg), gordura (percentual de gordura corporal), gorda (massa de gordura em kg), magra (massa magra ou massa livre de gordura em kg), muscular (massa muscular esquelética em kg), agua (água corporal total em litros), visceral (nível de gordura visceral). Use números com ponto decimal e null quando o valor não aparecer. Não invente valores.', { images: arquivo });
+    let n = 0;
+    CAMPOS_BIO.forEach(([k]) => { const el = document.getElementById(pre + k), v = d ? num(d[k]) : null; if (el && v != null) { el.value = numBR(v); n++; } });
+    const dt = document.getElementById(pre + 'data');
+    if (dt && d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.data || ''))) dt.value = d.data;
+    if (st) st.textContent = n ? `${n} valores preenchidos. Confira com o laudo antes de salvar.` : 'Não encontrei valores na imagem. Preencha à mão.';
+  } catch (e) {
+    if (e && ['not_granted', 'sampling_disabled', 'images_unavailable'].includes(e.code)) S.fotoOk = false;
+    if (st) st.textContent = MSG_SAMPLE[e && e.code] || 'A leitura falhou. Preencha à mão.';
+  }
+}
+
+/* ----- começar do zero ----- */
+function vRecomecar() {
+  const n = sessoesTodas().filter(s => !s.arquivado && s.status === 'concluido').length, r = rascunho();
+  if (S.rec.passo === 1) return `<div class="card" style="max-width:560px;margin:0 auto"><div style="font-size:36px" aria-hidden="true">↺</div><h2 style="margin:6px 0 8px">Começar do zero?</h2>
+    <p class="muted">${n === 1 ? 'Seu treino registrado vai para o arquivo e' : n ? `Seus ${n} treinos registrados vão para o arquivo e` : 'Você começa um ciclo novo e'} as cargas voltam aos valores iniciais para o seu perfil. Dá para restaurar o histórico depois, no Perfil. Medições e perfil continuam.</p>
+    ${r ? '<p class="alerta">O treino em andamento será descartado.</p>' : ''}
+    <button class="btn full" style="margin-top:14px" data-a="rec-passo" data-p="2">Continuar</button><button class="btn secondary full" style="margin-top:8px" data-a="voltar">Cancelar</button></div>`;
+  return `<div style="max-width:560px;margin:0 auto"><h2 style="margin:0 0 2px">Escolha seu programa</h2><p class="muted" style="font-size:13px">Dá para trocar depois. As cargas acompanham, porque o histórico é guardado por exercício.</p>
+    ${Object.entries(PROGRAMAS).map(([k, P]) => `<button class="opcao" data-a="rec-escolha" data-k="${k}" aria-pressed="${S.rec.escolha === k}"><div class="op-cab"><span class="op-nome">${esc(P.nome)}</span><span class="radio" aria-hidden="true"></span></div>${k === 'principal' ? '<span class="pill" style="margin:6px 0 2px">Recomendado, o que definimos</span>' : ''}<div style="font-size:14px;margin-top:4px">${P.dias} treinos por semana, ${P.duracao}</div><div class="smalltxt" style="margin-top:2px;font-size:13px">${esc(P.resumo)}</div></button>`).join('')}
+    <div class="aviso-arq"><span aria-hidden="true">🗄</span><span>${n ? 'Seus treinos registrados vão para o arquivo e podem ser restaurados.' : 'Nenhum treino para arquivar.'} Medições e perfil continuam.</span></div>
+    <button class="btn full" style="margin-top:12px" data-a="rec-comecar">Começar pelo treino A</button><button class="btn secondary full" style="margin-top:8px" data-a="rec-passo" data-p="1">Voltar ao passo 1</button></div>`;
+}
+
+/* ----- fotos dos aparelhos ----- */
+function reduzirImagem(arquivo, max) {
+  return new Promise(res0 => {
+    let feito = false;
+    const res = v => { if (!feito) { feito = true; res0(v); } };
+    setTimeout(() => res({ blob: arquivo, type: arquivo.type || 'image/jpeg' }), 4000);
+    let url;
+    try { url = URL.createObjectURL(arquivo); } catch (e) { res({ blob: arquivo, type: arquivo.type || 'image/jpeg' }); return; }
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+        c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob(b => res(b ? { blob: b, type: 'image/jpeg' } : { blob: arquivo, type: arquivo.type || 'image/jpeg' }), 'image/jpeg', 0.82);
+      } catch (e) { res({ blob: arquivo, type: arquivo.type || 'image/jpeg' }); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); res({ blob: arquivo, type: arquivo.type || 'image/jpeg' }); };
+    img.src = url;
+  });
+}
+function docMidia() { const m = clone(S.docs.midia || {}); m.id = 'midia'; m.tipo = 'midia'; m.fotos = m.fotos || {}; m.videos = m.videos || {}; return m; }
+function atualizarFotoNaTela(id) {
+  const art = document.querySelector(`[data-ex="${id}"]`);
+  if (art && S.page === 'session' && S.atual && S.atual.ex[id]) art.outerHTML = cardEx(id);
+  else if (S.page === 'library') render();
+}
+async function subirFoto(blob, type, exId) {
+  if (!sb || !USUARIO) return null;
+  const caminho = `${USUARIO}/${exId}-${Date.now()}.jpg`;
+  try {
+    const { error } = await comPrazo(sb.storage.from('fotos').upload(caminho, blob, { contentType: type || 'image/jpeg', upsert: true }), 30000);
+    if (error) return null;
+    const ref = 'sb:' + caminho; await FotosLocais.salvarComId(ref, blob); return ref;
+  } catch (e) { return null; }
+}
+function apagarFoto(ref) {
+  if (!ref) return;
+  if (String(ref).startsWith('sb:') && sb) sb.storage.from('fotos').remove([ref.slice(3)]).catch(() => {});
+  FotosLocais.apagar(ref);
+}
+/* fotos tiradas sem internet ficam no aparelho e sobem na próxima sincronização */
+let subindoFotos = false;
+async function enviarFotosPendentes() {
+  if (subindoFotos || !sb || !USUARIO || !fotosLocaisOk()) return;
+  const locais = Object.entries(midia().fotos).filter(([, ref]) => String(ref).startsWith('f'));
+  if (!locais.length) return;
+  subindoFotos = true;
+  try {
+    for (const [exId, ref] of locais) {
+      const blob = await FotosLocais.ler(ref); if (!blob) continue;
+      const novo = await subirFoto(blob, blob.type, exId); if (!novo) break;
+      const m = docMidia(); if (m.fotos[exId] !== ref) continue;
+      m.fotos[exId] = novo; gravarDoc(m); FotosLocais.apagar(ref);
+    }
+  } finally { subindoFotos = false; }
+}
+async function enviarFoto(id, arquivo) {
+  if (!podeFoto() || !arquivo) return;
+  toast('Salvando a foto…');
+  try {
+    const { blob, type } = await reduzirImagem(arquivo, 1280);
+    let novo = assetsNs ? (await assetsNs.upload(blob, { type })).id : await subirFoto(blob, type, id);
+    if (!novo) novo = await FotosLocais.salvar(blob);
+    const m = docMidia(), antiga = m.fotos[id];
+    m.fotos[id] = novo; gravarDoc(m);
+    if (antiga) { if (assetsNs) assetsNs.delete(antiga).catch(() => {}); else apagarFoto(antiga); }
+    atualizarFotoNaTela(id); toast(String(novo).startsWith('f') ? 'Foto salva neste celular; sobe para a conta quando houver internet' : 'Foto salva');
+  } catch (e) { toast('Não foi possível salvar a foto'); }
+}
+async function verFoto(id) {
+  const f = midia().fotos[id]; if (!f) return;
+  const r = await modal(`<img class="foto-grande" src="${esc(srcFoto(f))}" alt="Foto do aparelho: ${esc(nomeEx(id))}"><p style="margin:10px 0 0;font-weight:700">${esc(nomeEx(id))}</p>
+    ${podeFoto() ? `<label class="btn secondary small" style="display:inline-flex;align-items:center;margin-top:10px;cursor:pointer">📷 Trocar foto<input type="file" accept="image/*" data-foto-ex="${id}" hidden></label>` : ''}`,
+    podeFoto() ? [['Remover', 'rm', 'secondary'], ['Fechar', '1']] : [['Fechar', '1']]);
+  if (r !== 'rm' || !await confirmar('Remover a foto deste aparelho?', 'Remover', 'Cancelar')) return;
+  const m = docMidia(), antiga = m.fotos[id]; delete m.fotos[id]; await gravarDoc(m);
+  if (antiga) { if (assetsNs) assetsNs.delete(antiga).catch(() => {}); else apagarFoto(antiga); }
+  atualizarFotoNaTela(id); toast('Foto removida');
+}
+
+/* ----- perfil e cadastro ----- */
+function opcoes(lista, atual) {
+  const todas = atual && !lista.includes(atual) ? [atual, ...lista] : lista;
+  return todas.map(o => `<option ${o === atual ? 'selected' : ''}>${esc(o)}</option>`).join('');
+}
+function formPerfil(p, pre) {
+  return `<div class="fields">
+    <div class="field larga"><label for="${pre}nome">Nome</label><input id="${pre}nome" value="${esc(p.nome || '')}" autocomplete="given-name" maxlength="60"></div>
+    <div class="field"><label for="${pre}idade">Idade</label><input id="${pre}idade" inputmode="numeric" value="${esc(p.idade ?? '')}"></div>
+    <div class="field"><label for="${pre}altura">Altura (cm)</label><input id="${pre}altura" inputmode="numeric" value="${p.altura ? Math.round(p.altura * 100) : ''}"></div>
+    <div class="field"><label for="${pre}exp">Experiência</label><select id="${pre}exp">${opcoes(['Iniciante', 'Intermediária', 'Avançada'], p.experiencia || 'Iniciante')}</select></div>
+    <div class="field larga"><label for="${pre}obj">Objetivo principal</label><select id="${pre}obj">${opcoes(OBJETIVOS, p.objetivo || OBJETIVOS[0])}</select></div>
+    <div class="field"><label for="${pre}prazo">Prazo do objetivo (semanas)</label><input id="${pre}prazo" inputmode="numeric" value="${p.prazo || 8}"></div>
+    <div class="field larga"><label for="${pre}prog">Programa</label><select id="${pre}prog">${Object.entries(PROGRAMAS).map(([k, P]) => `<option value="${k}" ${progDe(p) === k ? 'selected' : ''}>${esc(P.nome)}, ${P.dias} treinos por semana</option>`).join('')}</select></div>
+    <div class="field larga"><label for="${pre}saude">Dores, lesões, restrições e observações de saúde</label><textarea id="${pre}saude" rows="2" maxlength="500" placeholder="Se não houver, escreva: nenhuma. Fica só na sua conta e entra na análise.">${esc(p.saude || '')}</textarea></div></div>`;
+}
+function lerPerfil(pre, base) {
+  const p = Object.assign({}, base, { id: 'perfil', tipo: 'perfil' });
+  const v = id => document.getElementById(pre + id);
+  p.nome = v('nome').value.trim(); p.idade = num(v('idade').value);
+  const alt = num(v('altura').value); p.altura = alt ? (alt > 3 ? alt / 100 : alt) : null;
+  p.experiencia = v('exp').value; p.objetivo = v('obj').value;
+  p.prazo = num(v('prazo').value) || 8; p.programa = v('prog').value; p.saude = v('saude').value.trim();
+  return p;
+}
+function lerBio(pre) { const r = {}; CAMPOS_BIO.forEach(([k]) => { const el = document.getElementById(pre + k), x = el ? num(el.value) : null; if (x != null) r[k] = x; }); return r; }
+function vProfile() {
+  const p = perfil();
+  const papel = { admin: 'Administrador', treinador: 'Treinador', aluno: 'Aluno' }[S.auth.papel] || '';
+  let h = `<div class="eyebrow">Configurações</div><h2>Meu perfil</h2>
+    <div class="card"><div class="row between"><h3 style="margin:0">Conta</h3>${papel ? `<span class="pill ${S.auth.papel === 'admin' ? 'ok' : ''}">${papel}</span>` : ''}</div>
+      <div class="linha-info"><span class="muted">E-mail</span><strong>${esc(S.auth.email || '')}</strong></div>
+      <p class="smalltxt" id="status" style="margin-top:6px">${esc(statusTexto())}</p>
+      <p class="smalltxt">Versão do app ${VERSAO_APP}${AMBIENTE === 'teste' ? ' · ambiente de teste' : ''}.</p>
+      ${S.trocarSenha ? `<form data-form="trocar-senha" class="fields" style="margin-top:10px"><div class="field"><label for="t-senha">Nova senha (mín. 8)</label><input id="t-senha" type="password" autocomplete="new-password" minlength="8" required></div><div class="field"><label for="t-senha2">Repita a senha</label><input id="t-senha2" type="password" autocomplete="new-password" minlength="8" required></div><button class="btn small larga field" type="submit">Salvar nova senha</button></form>` : ''}
+      <div class="row" style="margin-top:10px"><button class="btn secondary small" data-a="trocar-senha">${S.trocarSenha ? 'Cancelar' : 'Trocar senha'}</button><button class="btn secondary small" data-a="auth-sair">Sair da conta</button>${dadosLegados() && LS.get('mt_migracao', null) === 'recusada' ? `<button class="btn secondary small" data-a="migrar">Enviar dados antigos deste celular</button>` : ''}</div></div>
+    <div class="card"><h3>${esc(p.nome || 'Seu perfil')}</h3><p class="smalltxt">Objetivo: ${esc(p.objetivo || 'não definido')}. Programa: ${esc(prog().nome)}.</p>
+      ${p.altura ? `<div class="linha-info"><span class="muted">Altura</span><strong>${numBR(p.altura)} m</strong></div>` : ''}
+      ${p.idade ? `<div class="linha-info"><span class="muted">Idade</span><strong>${p.idade} anos</strong></div>` : ''}
+      ${ultimaCom('peso') ? `<div class="linha-info"><span class="muted">Peso de referência</span><strong>${numBR1(ultimaCom('peso').peso)} kg</strong></div>` : ''}
+      <button class="btn secondary small" style="margin-top:10px" data-a="editar-perfil">${S.editarPerfil ? 'Fechar edição' : 'Editar perfil'}</button></div>`;
+  if (S.editarPerfil) {
+    h += `<div class="card"><h3>Editar perfil</h3>${formPerfil(p, 'p-')}
+      <h3 style="margin-top:16px">Bioimpedância de referência</h3>${botaoFoto('pr-')}
+      <div class="fields" style="margin-top:8px"><div class="field larga"><label for="pr-data">Data do exame</label><input type="date" id="pr-data" value="${esc(p.refData || '')}"></div></div>
+      <div style="margin-top:9px">${camposBio('pr-', p.ref || {})}</div>
+      <button class="btn full" style="margin-top:14px" data-a="perfil-salvar">Salvar perfil</button></div>`;
+  }
+  h += `<div class="card"><h3>Seus dados</h3><p class="smalltxt">Exporte uma cópia quando quiser. A importação aceita o backup deste app e o arquivo do app anterior.</p>
+    <div class="row" style="margin-top:10px">${podeBaixar() ? `<button class="btn secondary small" data-a="backup">Exportar meus dados (JSON)</button><button class="btn secondary small" data-a="csv">Exportar CSV</button>` : ''}<button class="btn secondary small" data-a="importar">Importar backup</button></div>
+    <p class="smalltxt" style="margin-top:8px">A importação aceita o backup deste app e o arquivo exportado pelo app anterior.</p>
+    <input type="file" id="arq-import" accept="application/json,.json" hidden>
+    <div class="row" style="margin-top:12px"><button class="btn secondary small" data-go="recomecar">↺ Começar do zero</button>${sessoesTodas().some(s => s.arquivado) ? `<button class="btn secondary small" data-a="restaurar">Restaurar histórico arquivado (${sessoesTodas().filter(s => s.arquivado).length})</button>` : ''}</div>
+    <button class="lnk perigo" style="margin-top:6px" data-a="apagar-tudo">Apagar todos os dados</button></div>`;
+  return h;
+}
+function vOnboarding() {
+  return `<div class="card" style="max-width:520px;margin:10px auto">
+    <div class="eyebrow">Primeiro acesso · perfil inicial</div><h2 style="font-size:25px">Vamos começar?</h2>
+    <p class="muted">Crie seu perfil para preparar seu plano de treino. Seus dados ficam salvos na sua conta.</p>
+    ${formPerfil({ programa: 'corpo', nome: (S.auth.user && S.auth.user.user_metadata && S.auth.user.user_metadata.nome) || '' }, 'o-')}
+    <div class="card" style="margin-top:14px;background:var(--panel2)"><strong>Você tem um exame de bioimpedância?</strong>
+      <p class="smalltxt">Se tiver, registre os valores. Se não tiver, pode seguir sem preencher esta parte.</p>${botaoFoto('o-')}
+      <div class="fields" style="margin-top:8px"><div class="field larga"><label for="o-data">Data do exame</label><input type="date" id="o-data"></div></div>
+      <div style="margin-top:9px">${camposBio('o-', null)}</div></div>
+    <button class="btn full" style="margin-top:15px" data-a="cadastro">Concluir cadastro</button>
+    <div class="row between" style="margin-top:8px"><button class="lnk" data-a="importar">Já tenho um backup: importar arquivo</button><button class="lnk" data-a="pular-cadastro">Agora não</button></div>
+    <input type="file" id="arq-import" accept="application/json,.json" hidden></div>`;
+}
+
+/* ----- importação e exportação ----- */
+function lerArquivo(arq) { return new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result)); fr.onerror = () => rej(fr.error); fr.readAsText(arq); }); }
+function dataBRparaISO(t) { const m = String(t || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}` : null; }
+function tempoParaSeg(t) {
+  const v = String(t || '').trim();
+  if (/^\d+:\d{2}(:\d{2})?$/.test(v)) return v.split(':').map(Number).reduce((a, x) => a * 60 + x, 0);
+  const m = v.match(/(\d+)\s*min/); return m ? Number(m[1]) * 60 : 0;
+}
+function idExercicio(nome) {
+  const n = normalizar(nome).replace(/\s+/g, ' ').trim();
+  if (NOMES_ANTIGOS[n]) return NOMES_ANTIGOS[n];
+  return Object.keys(EX).find(id => normalizar(EX[id].nome) === n) || 'x_' + n.replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '').slice(0, 40);
+}
+/* converte o JSON exportado pelo app anterior ({history, measurements}) em registros do Meu Treino */
+function converterAntigo(dados) {
+  const docs = [], porDia = {};
+  (dados.history || []).forEach(h => {
+    const iso = dataBRparaISO(h.date); if (!iso) return;
+    const plano = String(h.plan || 'X').toUpperCase().slice(0, 1), idx = porDia[iso + plano] || 0;
+    porDia[iso + plano] = idx + 1;
+    const ex = {}, lista = [];
+    (h.items || []).forEach(it => {
+      if (!it || !it.name) return;
+      const id = idExercicio(it.name);
+      let sets;
+      if (Array.isArray(it.sets) && it.sets.length) sets = it.sets.map(z => ({ c: num(z.load), r: num(z.reps), ok: !!z.done }));
+      else {
+        const reps = String(it.reps || '').split('/').map(x => x.trim()).filter(Boolean), cargas = String(it.load || '').split('/').map(x => x.trim());
+        sets = reps.map((r, k) => ({ c: num(cargas[k] != null && cargas[k] !== '' ? cargas[k] : cargas[cargas.length - 1]), r: num(r), ok: !!it.done }));
+      }
+      if (ex[id]) ex[id].sets.push(...sets);
+      else { ex[id] = { sets, desc: it.comment || '', rf: null, p: EX[id] ? prescricao(id, null) : { series: sets.length || 3, min: 8, max: 12, rest: 90 } }; if (!EX[id]) ex[id].nome = it.name; lista.push(id); }
+    });
+    const c = h.cardio, cardio = cardioPadrao();
+    if (typeof c === 'string') cardio.seg = tempoParaSeg(c);
+    else if (c && typeof c === 'object') { cardio.modo = /interc|interv/i.test(c.type || '') ? 'intervalado' : 'continuo'; cardio.seg = tempoParaSeg(c.duration); cardio.forte = num(c.running) || 1; cardio.leve = num(c.walking) || 2; cardio.obs = c.note || ''; }
+    cardio.acumulado = cardio.seg; cardio.feito = cardio.seg > 0;
+    const esf = ESFORCOS.find(([n]) => normalizar(n) === normalizar(h.effort || ''));
+    docs.push({ id: `s${iso.replace(/-/g, '')}${plano}${idx}i`, tipo: 'sessao', v: 3, prog: 'app anterior', importado: true, treino: plano, nomeTreino: `Treino ${plano} do app anterior`, regiao: 'misto', lista,
+      inicio: new Date(iso + 'T12:00:00').toISOString(), fim: null, status: 'concluido', forcaOk: h.strengthDone !== false, esforco: esf ? esf[0] : null, rpe: ESFORCO_ANTIGO[normalizar(h.effort || '')] ?? null, obs: h.notes || '', ex, cardio });
+  });
+  (dados.measurements || []).forEach(m => {
+    const iso = dataBRparaISO(m.date); if (!iso) return;
+    docs.push({ id: `m${iso.replace(/-/g, '')}i`, tipo: 'medida', data: iso, peso: num(m.weight), cintura: num(m.waist), gordura: num(m.fat), obs: 'Importado do app anterior' });
+  });
+  return docs;
+}
+function gerarCSV() {
+  const cab = ['data', 'treino', 'exercicio', 'serie', 'carga_kg', 'reps', 'validada', 'dificuldade', 'anotacao', 'esforco', 'cardio_min', 'cardio_modo', 'obs_treino'];
+  const cel = v => { const t = String(v ?? ''); return /[;"\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+  const linhas = [cab];
+  validas().slice().sort(maisAntigo).forEach(s => listaDe(s).forEach(id => {
+    const e = s.ex && s.ex[id]; if (!e) return; const c = s.cardio || {};
+    e.sets.forEach((x, k) => linhas.push([dataLonga(s.inicio), s.treino, nomeEx(id), k + 1, numBR(x.c), x.r ?? '', x.ok ? 'sim' : 'não', e.dif || '', e.desc || '', s.esforco || '', c.seg ? Math.round(c.seg / 60) : '', c.seg ? (c.modo === 'intervalado' ? 'intercalado' : 'contínuo') : '', s.obs || '']));
+  }));
+  return '\ufeff' + linhas.map(l => l.map(cel).join(';')).join('\r\n');
+}
+
+/* ================= descanso, avisos ================= */
+const T = { fim: 0, total: 0, int: null, ocultar: null };
+let actx = null, wl = null;
+function prepararAudio() { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) {} }
+function bip(atraso) {
+  if (!actx) return;
+  try {
+    const t = actx.currentTime + atraso, o = actx.createOscillator(), g = actx.createGain();
+    o.frequency.value = 880; o.connect(g); g.connect(actx.destination);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.3, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+    o.start(t); o.stop(t + 0.4);
+  } catch (e) {}
+}
+function iniciarTimer(seg) {
+  const el = $('#timer');
+  el.classList.remove('acabou'); $('#t-rot').textContent = 'Descanso';
+  clearTimeout(T.ocultar); T.total = seg; T.fim = Date.now() + seg * 1000; el.hidden = false;
+  clearInterval(T.int); T.int = setInterval(tick, 250); tick();
+}
+function tick() {
+  const rest = Math.max(0, T.fim - Date.now());
+  $('#t-tempo').textContent = mmss(Math.ceil(rest / 1000));
+  $('#t-fill').style.transform = `scaleX(${T.total ? Math.min(1, rest / (T.total * 1000)) : 0})`;
+  if (rest <= 0) {
+    clearInterval(T.int); T.int = null; $('#timer').classList.add('acabou'); $('#t-rot').textContent = 'Descanso finalizado';
+    try { navigator.vibrate && navigator.vibrate([250, 120, 250]); } catch (e) {}
+    bip(0); bip(0.5); T.ocultar = setTimeout(pararTimer, 6000);
+  }
+}
+function pararTimer() { clearInterval(T.int); T.int = null; clearTimeout(T.ocultar); $('#timer').hidden = true; }
+$('#timer').addEventListener('click', e => {
+  const b = e.target.closest('[data-t]'); if (!b) return;
+  if (b.dataset.t === 'x') { pararTimer(); return; }
+  if (!T.int) return;
+  T.fim = Math.max(Date.now(), T.fim + Number(b.dataset.t) * 1000); T.total = Math.max(T.total, (T.fim - Date.now()) / 1000); tick();
+});
+async function manterTelaLigada() { try { if ('wakeLock' in navigator && !wl) { wl = await navigator.wakeLock.request('screen'); wl.addEventListener('release', () => { wl = null; }); } } catch (e) {} }
+function liberarTela() { try { wl && wl.release(); } catch (e) {} wl = null; }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.page === 'session') manterTelaLigada(); });
+let tToast = null;
+function toast(msg, dur) { const el = $('#toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(tToast); tToast = setTimeout(() => el.classList.remove('on'), dur || 2800); }
+function modal(html, botoes) {
+  return new Promise(res => {
+    const m = document.createElement('div'); m.className = 'modal';
+    m.innerHTML = `<div class="modalbox" role="dialog" aria-modal="true">${html}<div class="row" style="margin-top:16px;justify-content:center">${botoes.map(([t, v, cls]) => `<button class="btn ${cls || ''}" style="flex:1" data-r="${v}">${esc(t)}</button>`).join('')}</div></div>`;
+    m.addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (!b && e.target !== m) return; m.remove(); res(b ? b.dataset.r : '0'); });
+    document.body.appendChild(m); const ult = m.querySelectorAll('[data-r]'); ult[ult.length - 1].focus();
+  });
+}
+const confirmar = async (msg, sim, nao) => (await modal(`<p style="font-size:16px">${esc(msg)}</p>`, [[nao, '0', 'secondary'], [sim, '1']])) === '1';
+async function copiar(texto) {
+  try { await navigator.clipboard.writeText(texto); return true; } catch (e) {}
+  try { const ta = $('#rel'); ta.focus(); ta.select(); ta.setSelectionRange(0, texto.length); if (document.execCommand('copy')) return true; } catch (e) {}
+  return false;
+}
+async function baixar(nome, dados, okMsg) {
+  if (downloads) { try { await downloads.save({ filename: nome, data: dados }); toast(okMsg); return true; } catch (err) { if (!err || err.code !== 'declined') toast('Não foi possível baixar agora'); return false; } }
+  if (window.claude) return false;
+  const url = URL.createObjectURL(new Blob([dados], { type: nome.endsWith('.csv') ? 'text/csv;charset=utf-8' : 'application/json' }));
+  const a = document.createElement('a'); a.href = url; a.download = nome; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 3000); toast(okMsg); return true;
+}
+
+/* ================= ações ================= */
+function ir(page, substituir) {
+  if (page !== 'session') { pararTimer(); liberarTela(); }
+  S.page = page; render(); window.scrollTo(0, 0);
+  const hash = PAGINAS[page] ? PAGINAS[page][0] : 'inicio';
+  if (substituir) pilha[pilha.length - 1] = page; else if (pilha[pilha.length - 1] !== page) pilha.push(page);
+  if (location.hash.slice(1) !== hash) { navegando = true; if (substituir) location.replace('#' + hash); else location.hash = hash; }
+}
+function voltar() { if (pilha.length > 1) history.back(); else ir('home', true); }
+window.addEventListener('hashchange', () => {
+  if (navegando) { navegando = false; return; }
+  let page = HASH_PAGINA[location.hash.slice(1)] || 'home';
+  if (pilha.length > 1 && pilha[pilha.length - 2] === page) pilha.pop(); else pilha.push(page);
+  if (page === 'session' && !S.atual) page = 'home';
+  if (page !== 'session') { pararTimer(); liberarTela(); }
+  S.page = page; render(); window.scrollTo(0, 0);
+});
+async function iniciarTreino(t, substituir) {
+  if (rascunho()) { toast('Já existe um treino em andamento'); return; }
+  const aviso = avisoRecuperacao(t);
+  if (aviso && !await confirmar(aviso + ' Começar mesmo assim?', 'Começar', 'Voltar')) return;
+  const ex = {}, lista = [];
+  itensTreino(t).forEach(it => {
+    const p = prescricao(it.id, t), v = valoresIniciais(it.id, p);
+    ex[it.id] = { sets: v.sets.map(x => ({ c: x.c, r: x.r, ok: false })), desc: '', dif: null, enviado: false, origem: v.origem, inc: v.inc, p }; lista.push(it.id);
+  });
+  const P = prog(), tr = treinoDef(t);
+  S.atual = normalizarAtual({ id: 's' + Date.now(), tipo: 'sessao', v: 3, prog: P.versao, programa: progChave(), treino: t, nomeTreino: tr.nome, regiao: tr.regiao, lista,
+    inicio: new Date().toISOString(), fim: null, status: 'andamento', forcaOk: false, esforco: 'Moderado', rpe: 5, obs: '', ex });
+  salvarAtual(true, true);
+  ir('session', substituir); manterTelaLigada();
+}
+async function salvarTreino() {
+  const s = S.atual, f = contarFeitas(s), c = s.cardio;
+  if (c.rodando) { c.acumulado = cardioDecorrido(c); c.rodando = false; c.inicioMs = null; if (!c.feito) { c.seg = Math.round(c.acumulado); c.feito = c.seg > 0; } }
+  if (!f.ok && !c.seg) { toast('Nada registrado ainda para salvar'); return; }
+  if (f.ok && !s.forcaOk && !await confirmar('A musculação não foi marcada como concluída. Salvar assim mesmo?', 'Salvar', 'Voltar')) return;
+  s.status = 'concluido'; s.fim = new Date().toISOString(); s.forcaOk = s.forcaOk || f.ok > 0;
+  const e = ESFORCOS.find(([n]) => n === s.esforco); s.rpe = e ? e[1] : null;
+  S.atual = null; LS.del('mt_atual'); clearTimeout(tSalvar);
+  gravarDoc(s); pararTimer(); liberarTela();
+  ir('home');
+  const rec = recordes(s);
+  playOk();
+  modal(`<div style="font-size:48px" aria-hidden="true">🏆</div><div class="eyebrow" style="margin-top:8px">Sessão concluída</div><h2 style="margin:8px 0">Parabéns! Você fez acontecer.</h2>
+    <p class="muted">Treino ${esc(s.treino)} salvo: ${f.ok} de ${f.total} séries, ${duracao(s)}${c.seg ? `, cardio ${cardioTxt(c.seg)}` : ''}. Cada sessão conta para sua evolução.</p>
+    ${rec.length ? `<p style="margin:12px 0 0;font-weight:700">Novos recordes de força</p><ul>${rec.map(r => `<li>${esc(r)}</li>`).join('')}</ul>` : ''}`, [['Fechar', '1']]);
+}
+function playOk() { prepararAudio(); bip(0); }
+
+document.addEventListener('click', ev => { tratarClique(ev).catch(err => { console.error(err); toast('Algo deu errado. Tente de novo.'); document.querySelectorAll('[data-a="rec-comecar"]').forEach(x => { x.disabled = false; x.textContent = 'Começar pelo treino A'; }); }); });
+async function tratarClique(ev) {
+  const g = ev.target.closest('[data-go]');
+  if (g && !g.closest('.modal')) { ev.preventDefault(); if (g.dataset.go === 'recomecar') S.rec = { passo: 1, escolha: progChave() }; ir(g.dataset.go); return; }
+  const b = ev.target.closest('[data-a]'); if (!b || b.disabled || !(app.contains(b) || $('#top').contains(b))) return;
+  const a = b.dataset.a, s = S.atual;
+  switch (a) {
+    case 'iniciar': iniciarTreino(b.dataset.t); break;
+    case 'continuar': {
+      if (!S.atual) { const r = rascunhoNuvem(); if (!r) return; S.atual = normalizarAtual(clone(r)); LS.set('mt_atual', S.atual); }
+      ir('session'); manterTelaLigada(); break;
+    }
+    case 'voltar': voltar(); break;
+    case 'auth-tela': S.auth.tela = b.dataset.t; S.auth.erro = ''; S.auth.msg = ''; render(); break;
+    case 'auth-sair': sairDaConta(); break;
+    case 'trocar-senha': S.trocarSenha = !S.trocarSenha; render(); break;
+    case 'migrar': { const leg = dadosLegados(); if (leg) migrarLegados(Object.values(leg).filter(d => d && d.id)); break; }
+    case 'consent-aceitar': {
+      if (!$('#c-termos').checked || !$('#c-saude').checked) { toast('Marque as duas opções para continuar'); return; }
+      b.disabled = true; b.textContent = 'Salvando…';
+      try {
+        const { error } = await comPrazo(sb.from('consentimentos').insert(['termos', 'privacidade', 'dados_saude'].map(documento => ({ usuario_id: USUARIO, documento, versao: VERSAO_TERMOS }))), 15000);
+        if (error) throw error;
+        LS.set('mt_consent', { versao: VERSAO_TERMOS, em: new Date().toISOString() }); S.consentido = true; render(); oferecerMigracao();
+      } catch (err) { b.disabled = false; b.textContent = 'Concordo e continuar'; toast(falhaDeRede(err) ? 'Sem conexão. Tente de novo quando estiver online.' : `Não foi possível salvar (${motivo(err)}). Tente de novo.`, 7000); }
+      break;
+    }
+    case 'foto-ver': verFoto(b.dataset.exId); break;
+    case 'video-salvar': {
+      const url = ($('#v-' + b.dataset.id) || {}).value || '';
+      if (!/^https:\/\/(www\.|m\.)?(youtube\.com|youtu\.be)\//i.test(url.trim())) { toast('Cole um link do YouTube (começa com https://)'); return; }
+      const m = docMidia(); m.videos[b.dataset.id] = url.trim(); await gravarDoc(m); render(); toast('Vídeo fixado'); break;
+    }
+    case 'video-limpar': { const m = docMidia(); delete m.videos[b.dataset.id]; await gravarDoc(m); render(); toast('Voltou para a busca'); break; }
+    case 'rec-passo': S.rec.passo = Number(b.dataset.p); render(); window.scrollTo(0, 0); break;
+    case 'rec-escolha': S.rec.escolha = b.dataset.k; document.querySelectorAll('.opcao').forEach(x => x.setAttribute('aria-pressed', String(x === b))); break;
+    case 'rec-comecar': {
+      b.disabled = true; b.textContent = 'Preparando…';
+      const r = rascunho();
+      if (r) { S.atual = null; LS.del('mt_atual'); clearTimeout(tSalvar); await apagarDoc(r.id); }
+      const agora = new Date().toISOString();
+      for (const sx of sessoesTodas()) if (!sx.arquivado) { sx.arquivado = true; sx.arquivadoEm = agora; await gravarDoc(sx); }
+      const p = clone(perfil()); p.id = 'perfil'; p.tipo = 'perfil'; p.programa = S.rec.escolha; p.cicloInicio = agora; await gravarDoc(p);
+      S.rec = { passo: 1, escolha: S.rec.escolha };
+      await iniciarTreino(prog().ordem[0], true);
+      toast('Novo ciclo começado. Bom treino!'); break;
+    }
+    case 'restaurar': {
+      const arq = sessoesTodas().filter(x => x.arquivado);
+      if (!await confirmar(`Restaurar ${arq.length} ${arq.length === 1 ? 'treino arquivado' : 'treinos arquivados'}? Eles voltam ao histórico e às sugestões de carga.`, 'Restaurar', 'Cancelar')) return;
+      for (const sx of arq) { delete sx.arquivado; delete sx.arquivadoEm; await gravarDoc(sx); }
+      render(); toast('Histórico restaurado'); break;
+    }
+    case 'descartar': {
+      const r = rascunho(); if (!r) return;
+      if (!await confirmar('Descartar este treino? As séries registradas nele serão apagadas.', 'Descartar', 'Manter')) return;
+      S.atual = null; LS.del('mt_atual'); clearTimeout(tSalvar); pararTimer(); liberarTela();
+      await apagarDoc(r.id); ir('home'); break;
+    }
+    case 'ok': case 'todas': case 'descanso': case 'mais-serie': case 'dif': case 'nota-abrir': case 'enviar': case 'editar-envio': {
+      const art = b.closest('[data-ex]'), id = art.dataset.ex, e = s.ex[id], p = e.p || prescricao(id, s.treino);
+      if (a === 'descanso') { prepararAudio(); iniciarTimer(p.rest); return; }
+      if (a === 'dif') { e.dif = b.dataset.n; art.querySelectorAll('[data-a="dif"]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); salvarAtual(true); return; }
+      if (a === 'nota-abrir') { S.notas.add(id); art.outerHTML = cardEx(id); const t = document.querySelector(`[data-ex="${id}"] [data-desc]`); if (t) t.focus(); return; }
+      if (a === 'enviar') {
+        if (!e.dif) { toast('Escolha fácil, moderado ou difícil'); return; }
+        e.enviado = true; e.enviadoEm = new Date().toISOString(); art.outerHTML = cardEx(id); salvarAtual(true, true); toast('Registrado no treino'); return;
+      }
+      if (a === 'editar-envio') { e.enviado = false; if (e.desc) S.notas.add(id); art.outerHTML = cardEx(id); salvarAtual(true); return; }
+      if (a === 'mais-serie') { const u = e.sets[e.sets.length - 1] || {}; e.sets.push({ c: u.c ?? null, r: u.r ?? null, ok: false }); art.outerHTML = cardEx(id); atualizarProgresso(); salvarAtual(true, true); return; }
+      if (a === 'todas') {
+        if (e.sets.some(st => !st.ok && st.r == null)) { toast('Preencha as repetições das séries pendentes'); return; }
+        e.sets.forEach(st => { st.ok = true; }); playOk();
+      } else {
+        const lin = b.closest('[data-k]'), st = e.sets[+lin.dataset.k];
+        if (!st.ok) {
+          if (st.r == null) { toast('Confira carga e repetições antes de validar'); $('[data-f="r"]', lin).focus(); return; }
+          st.ok = true; prepararAudio(); bip(0); iniciarTimer(p.rest);
+        } else st.ok = false;
+      }
+      art.outerHTML = cardEx(id); atualizarProgresso(); salvarAtual(true, true); break;
+    }
+    case 'forca': {
+      if (!s.forcaOk && !contarFeitas(s).ok && !await confirmar('Nenhuma série validada. Concluir a musculação assim mesmo?', 'Concluir', 'Voltar')) return;
+      s.forcaOk = !s.forcaOk; pararTimer(); salvarAtual(true, true);
+      b.classList.toggle('done', s.forcaOk); b.textContent = s.forcaOk ? '✓ Musculação concluída' : 'Concluir sessão de musculação';
+      renderCardio();
+      if (s.forcaOk) { const cc = $('#cardio-card'); if (cc && cc.scrollIntoView) cc.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      break;
+    }
+    case 'c-modo': s.cardio.modo = b.dataset.m; salvarAtual(false); renderCardio(); break;
+    case 'c-play': {
+      const c = s.cardio;
+      if (c.rodando) { c.acumulado = cardioDecorrido(c); c.rodando = false; c.inicioMs = null; }
+      else { prepararAudio(); c.rodando = true; c.inicioMs = Date.now(); c.pulado = false; faseAnterior = null; manterTelaLigada(); }
+      salvarAtual(true, true); renderCardio(); break;
+    }
+    case 'c-zerar': if (!await confirmar('Zerar o tempo do cardio?', 'Zerar', 'Cancelar')) return; Object.assign(s.cardio, { acumulado: 0, rodando: false, inicioMs: null }); salvarAtual(true, true); renderCardio(); break;
+    case 'c-concluir': {
+      const c = s.cardio;
+      if (c.feito) { c.feito = false; }
+      else { c.seg = Math.round(cardioDecorrido(c)); c.acumulado = c.seg; c.rodando = false; c.inicioMs = null; if (!c.seg) { toast('Inicie o cronômetro ou use “Pular cardio hoje”'); return; } c.feito = true; c.pulado = false; playOk(); }
+      salvarAtual(true, true); renderCardio(); break;
+    }
+    case 'c-pular': { const c = s.cardio; c.pulado = !c.pulado; if (c.pulado) { c.rodando = false; c.inicioMs = null; } salvarAtual(true, true); renderCardio(); break; }
+    case 'esforco': s.esforco = b.dataset.n; b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); salvarAtual(true); break;
+    case 'salvar': salvarTreino(); break;
+    case 'cal': {
+      const hoje = new Date(), base = S.cal ? new Date(S.cal + '-01T12:00:00') : new Date(hoje.getFullYear(), hoje.getMonth(), 1, 12);
+      const n = new Date(base.getFullYear(), base.getMonth() + Number(b.dataset.d), 1, 12);
+      S.cal = `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}`; S.diaSel = null; render(); break;
+    }
+    case 'dia': S.diaSel = S.diaSel === b.dataset.k ? null : b.dataset.k; render(); break;
+    case 'abrir': {
+      S.aberto = b.dataset.id; render();
+      const alvo = document.querySelector(`[data-hist="${b.dataset.id}"]`); if (alvo && alvo.scrollIntoView) alvo.scrollIntoView({ block: 'start' });
+      break;
+    }
+    case 'apagar': if (!await confirmar('Apagar este treino do histórico? Não dá para desfazer.', 'Apagar', 'Cancelar')) return; await apagarDoc(b.dataset.id); S.aberto = null; render(); toast('Treino apagado'); break;
+    case 'med-salvar': {
+      const m = Object.assign({ id: 'm' + Date.now(), tipo: 'medida', data: $('#m-data').value || hojeISO(), cintura: num($('#m-cintura').value) }, lerBio('m-'));
+      if (CAMPOS_TODOS.every(k => m[k] == null)) { toast('Preencha ao menos um valor'); return; }
+      gravarDoc(m); render(); toast('Medição salva'); break;
+    }
+    case 'med-apagar': if (!await confirmar('Apagar esta medição?', 'Apagar', 'Cancelar')) return; await apagarDoc(b.dataset.id); render(); break;
+    case 'periodo': S.periodo = Number(b.dataset.d); render(); break;
+    case 'relatorio': S.relVisivel = true; render(); { const r = $('#rel-area'); if (r && r.scrollIntoView) r.scrollIntoView({ block: 'start' }); } break;
+    case 'copiar': toast(await copiar(gerarRelatorio(S.periodo)) ? 'Relatório copiado' : 'Selecione o texto e copie manualmente'); break;
+    case 'csv': baixar(`meu-treino-${hojeISO()}.csv`, gerarCSV(), 'CSV baixado'); break;
+    case 'backup': if (await baixar(`meu-treino-backup-${hojeISO()}.json`, JSON.stringify({ app: 'meu-treino', versao: VERSAO_APP, exportado: new Date().toISOString(), docs: Object.values(S.docs) }, null, 1), 'Backup baixado')) { LS.set('mt_backup_em', Date.now()); if (S.page === 'home') render(); } break;
+    case 'importar': $('#arq-import').click(); break;
+    case 'ia': analisar(); break;
+    case 'ia-parar': if (S.ia.ctl) S.ia.ctl.abort(); break;
+    case 'editar-perfil': S.editarPerfil = !S.editarPerfil; render(); break;
+    case 'perfil-salvar': {
+      const p = lerPerfil('p-', perfil());
+      p.refData = $('#pr-data').value || null; p.ref = lerBio('pr-');
+      gravarDoc(p); S.editarPerfil = false; render(); toast('Perfil salvo'); break;
+    }
+    case 'cadastro': {
+      const p = lerPerfil('o-', {});
+      if (!p.nome) { toast('Informe seu nome'); $('#o-nome').focus(); return; }
+      if (!p.saude) { toast('Conte se há dores ou restrições (ou escreva: nenhuma)'); $('#o-saude').focus(); return; }
+      const bio = lerBio('o-'), dataBio = $('#o-data').value;
+      if (Object.keys(bio).length) { p.ref = bio; p.refData = dataBio || hojeISO(); }
+      gravarDoc(p); ir('home'); toast(`Perfil criado. Bom treino, ${p.nome}!`); break;
+    }
+    case 'pular-cadastro': S.pularOnb = true; render(); break;
+    case 'apagar-tudo': {
+      if (!await confirmar('Apagar todos os treinos, medições e o perfil? Exporte um backup antes.', 'Continuar', 'Cancelar')) return;
+      if (!await confirmar('Tem certeza? Isso não dá para desfazer.', 'Apagar tudo', 'Cancelar')) return;
+      S.atual = null; LS.del('mt_atual');
+      for (const id of Object.keys(S.docs)) await apagarDoc(id);
+      ir('home'); toast('Dados apagados'); break;
+    }
+  }
+}
+
+app.addEventListener('submit', ev => {
+  const form = ev.target.closest('form[data-form]'); if (!form) return;
+  ev.preventDefault();
+  enviarFormulario(form).catch(err => { S.auth.erro = msgAuth(err); render(); });
+});
+async function enviarFormulario(form) {
+  const tipo = form.dataset.form, v = id => ((form.querySelector('#' + id) || {}).value || '');
+  const botao = form.querySelector('[type="submit"]');
+  if (botao) { botao.disabled = true; botao.textContent = 'Aguarde…'; }
+  const email = v('a-email').trim().toLowerCase();
+  if (email) S.auth.email = email;
+  S.auth.erro = ''; S.auth.msg = '';
+  const erro = m => { if (tipo === 'trocar-senha') { toast(m); render(); } else { S.auth.erro = m; render(); } };
+  if (!sb) return erro('Sem conexão com o servidor de login.');
+  if (tipo === 'auth-entrar') {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: v('a-senha') });
+    if (error) return erro(msgAuth(error));
+    return entrarNoApp(data.session);
+  }
+  if (tipo === 'auth-criar') {
+    const nome = v('a-nome').trim(), s1 = v('a-senha'), s2 = v('a-senha2');
+    if (!nome) return erro('Informe seu nome.');
+    if (s1.length < 8) return erro('A senha precisa ter pelo menos 8 caracteres.');
+    if (s1 !== s2) return erro('As duas senhas não são iguais.');
+    const { data, error } = await sb.auth.signUp({ email, password: s1, options: { data: { nome }, emailRedirectTo: urlApp() } });
+    if (error) return erro(msgAuth(error));
+    if (data && data.session) return entrarNoApp(data.session);
+    S.auth.tela = 'enviado'; return render();
+  }
+  if (tipo === 'auth-esqueci') {
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: urlApp() });
+    if (error) return erro(msgAuth(error));
+    S.auth.tela = 'enviado'; return render();
+  }
+  if (tipo === 'auth-novasenha' || tipo === 'trocar-senha') {
+    const pre = tipo === 'auth-novasenha' ? 'a-' : 't-', s1 = v(pre + 'senha'), s2 = v(pre + 'senha2');
+    if (s1.length < 8) return erro('A senha precisa ter pelo menos 8 caracteres.');
+    if (s1 !== s2) return erro('As duas senhas não são iguais.');
+    const { error } = await sb.auth.updateUser({ password: s1 });
+    if (error) return erro(msgAuth(error));
+    toast('Senha alterada');
+    if (tipo === 'trocar-senha') { S.trocarSenha = false; return render(); }
+    S.auth.estado = 'fora';
+    const { data } = await sb.auth.getSession();
+    if (data && data.session) return entrarNoApp(data.session);
+    S.auth.tela = 'entrar'; S.auth.msg = 'Senha alterada. Entre com a nova senha.'; return render();
+  }
+}
+app.addEventListener('input', e => {
+  const el = e.target;
+  if (el.id === 'busca') {
+    S.busca = el.value; const q = normalizar(el.value); let algum = false;
+    document.querySelectorAll('.bib').forEach(c => { const v = !q || c.dataset.busca.includes(q); c.hidden = !v; if (v) algum = true; });
+    const vz = $('#busca-vazia'); if (vz) vz.hidden = algum; return;
+  }
+  if (el.hasAttribute('data-perg')) { S.pergunta = el.value; return; }
+  if (S.page !== 'session' || !S.atual) return;
+  const s = S.atual, art = el.closest('[data-ex]');
+  if (el.dataset.f && art) {
+    const ex = s.ex[art.dataset.ex], k = +el.closest('[data-k]').dataset.k, st = ex.sets[k], f = el.dataset.f;
+    st[f] = num(el.value); st['m' + f] = true; el.classList.remove('sug');
+    for (let j = k + 1; j < ex.sets.length; j++) {
+      const sj = ex.sets[j]; if (sj.ok || sj['m' + f]) continue;
+      sj[f] = st[f];
+      const inp = art.querySelector(`[data-k="${j}"] [data-f="${f}"]`); if (inp) inp.value = f === 'c' ? numBR(sj[f]) : (sj[f] ?? '');
+    }
+  } else if (el.hasAttribute('data-desc') && art) s.ex[art.dataset.ex].desc = el.value;
+  else if (el.hasAttribute('data-obs')) s.obs = el.value;
+  else if (el.dataset.cf) s.cardio[el.dataset.cf] = el.dataset.cf === 'obs' ? el.value : num(el.value);
+  else return;
+  salvarAtual(false);
+});
+app.addEventListener('change', async e => {
+  const el = e.target;
+  if (el.id === 'sel-forca') { S.exForca = el.value; render(); return; }
+  if (el.dataset.foto) { const arq = el.files && el.files[0]; if (arq) lerExame(arq, el.dataset.foto); el.value = ''; return; }
+  if (el.id === 'arq-import') {
+    const arq = el.files && el.files[0]; if (!arq) return;
+    let dados;
+    try { dados = JSON.parse(await lerArquivo(arq)); } catch (err) { toast('Arquivo inválido'); return; }
+    let docs = null, antigo = false;
+    if (dados && dados.app === 'meu-treino' && Array.isArray(dados.docs)) docs = dados.docs.filter(d => d && d.id && typeof d.id === 'string');
+    else if (dados && (Array.isArray(dados.history) || Array.isArray(dados.measurements))) { docs = converterAntigo(dados); antigo = true; }
+    if (!docs || !docs.length) { toast('Esse arquivo não é um backup do Meu Treino'); return; }
+    const nS = docs.filter(d => tipoDoc(d) === 'sessao').length, nM = docs.filter(d => d.tipo === 'medida').length;
+    if (!await confirmar(antigo ? `Importar ${nS} ${nS === 1 ? 'treino' : 'treinos'} e ${nM} ${nM === 1 ? 'medição' : 'medições'} do app anterior? Importar o mesmo arquivo de novo não duplica nada.` : `Importar ${docs.length} registros? Registros com o mesmo identificador serão substituídos.`, 'Importar', 'Cancelar')) return;
+    for (const d of docs) {
+      S.apagados.delete(d.id);
+      const atual = S.docs[d.id];
+      if (atual && d.tipo === 'medida') Object.keys(atual).forEach(k => { if (d[k] == null || d[k] === '') d[k] = atual[k]; });
+      await gravarDoc(d);
+    }
+    salvarApagados(); indexarNomes(); el.value = ''; render(); toast('Importação concluída'); return;
+  }
+  if (S.page === 'session' && S.atual) salvarAtual(true);
+});
+
+document.addEventListener('change', ev => {
+  const el = ev.target;
+  if (!el.dataset || !el.dataset.fotoEx) return;
+  const arq = el.files && el.files[0], id = el.dataset.fotoEx;
+  const m = el.closest('.modal'); if (m) m.remove();
+  if (arq) enviarFoto(id, arq);
+  el.value = '';
+});
+setInterval(() => { if (S.page === 'session' && S.atual && S.atual.cardio.rodando) atualizarCardioDOM(); }, 250);
+setInterval(() => { const i = $('#hdr-info'); if (i && S.page === 'session') i.textContent = `${minutosDecorridos()} min`; }, 20000);
+
+(function inicio() {
+  const pedida = HASH_PAGINA[location.hash.slice(1)];
+  S.page = pedida && !['onboarding', 'recomecar'].includes(pedida) && (pedida !== 'session' || S.atual) ? pedida : 'home';
+  pilha.push(S.page);
+  const hash = PAGINAS[S.page][0];
+  if (location.hash.slice(1) !== hash) { navegando = true; location.replace('#' + hash); }
+})();
+render();
+if (fotosLocaisOk()) FotosLocais.carregarTodas().catch(() => {});
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+iniciarConta();
+if (!window.claude && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
