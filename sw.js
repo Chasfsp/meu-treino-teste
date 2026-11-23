@@ -1,5 +1,5 @@
 /* Meu Treino: funciona sem internet e busca atualizações quando há conexão */
-const VERSAO = '4.2';
+const VERSAO = '4.3';
 /* oficial e teste ficam no mesmo domínio: cada um usa e limpa só a própria cópia */
 const AMB = self.registration.scope.includes('/meu-treino-teste/') ? 'teste' : 'oficial';
 const CACHE = `meu-treino-${AMB}-${VERSAO}`;
