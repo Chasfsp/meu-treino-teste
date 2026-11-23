@@ -1,9 +1,9 @@
 /* Meu Treino: funciona sem internet e busca atualizações quando há conexão */
-const VERSAO = '4.3';
+const VERSAO = '4.4';
 /* oficial e teste ficam no mesmo domínio: cada um usa e limpa só a própria cópia */
 const AMB = self.registration.scope.includes('/meu-treino-teste/') ? 'teste' : 'oficial';
 const CACHE = `meu-treino-${AMB}-${VERSAO}`;
-const ARQUIVOS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png',
+const ARQUIVOS = ['./', './index.html', './fotos.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled(ARQUIVOS.map(a => c.add(a)))).then(() => self.skipWaiting()));
