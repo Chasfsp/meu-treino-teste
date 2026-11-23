@@ -5,27 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Meu Treino</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#101010">
+<meta name="theme-color" content="#0B0B0B">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<script src="fotos.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&display=swap">
 <style>
 :root{
-  color-scheme: light;
-  --bg:#F2F2F2; --hdr:rgba(242,242,242,.92); --panel:#FFFFFF; --panel2:#F0F0F0; --hero:linear-gradient(135deg,#FFFFFF,#F6F1EE);
-  --line:#E0E0E0; --text:#161616; --muted:#666666; --orange:#E35F00; --on-orange:#FFFFFF; --peach:#B14E1C; --tile:#FCE3D3; --pill-bg:#FBE6D9;
-  --green:#1F8A57; --red:#C2392F; --input:#FAFAFA; --input-line:#CFCFCF; --done-bg:#E2F3E9; --done-line:#2F9E64; --done-text:#18663F; --lock-bg:#E9F5EE;
+  color-scheme: dark;
+  --bg:#0B0B0B; --hdr:rgba(11,11,11,.92); --panel:#161616; --panel2:#222222; --hero:linear-gradient(135deg,#1E1E1E,#141414);
+  --line:#262626; --text:#FFFFFF; --muted:#BDBDBD; --orange:#FF6A00; --on-orange:#1A0E05; --peach:#FF8A3D; --tile:#2A1708; --pill-bg:#2A1708;
+  --green:#46C78A; --red:#FF7777; --input:#101010; --input-line:#3A3A3A; --done-bg:#183626; --done-line:#43B879; --done-text:#A9EFC5; --lock-bg:#16261D;
   --f:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
-    --bg:#101010; --hdr:rgba(17,17,17,.92); --panel:#1D1D1D; --panel2:#272727; --hero:linear-gradient(135deg,#292929,#1B1B1B);
-    --line:#353535; --text:#F4F4F4; --muted:#A9A9A9; --orange:#FF6900; --on-orange:#1A1009; --peach:#F5A486; --tile:#3A2418; --pill-bg:#3B281E;
-    --green:#46C78A; --red:#FF7777; --input:#111111; --input-line:#454545; --done-bg:#254B37; --done-line:#43B879; --done-text:#A9EFC5; --lock-bg:#1D3328;
+    --bg:#0B0B0B; --hdr:rgba(11,11,11,.92); --panel:#161616; --panel2:#222222; --hero:linear-gradient(135deg,#1E1E1E,#141414);
+    --line:#262626; --text:#FFFFFF; --muted:#BDBDBD; --orange:#FF6A00; --on-orange:#1A0E05; --peach:#FF8A3D; --tile:#2A1708; --pill-bg:#2A1708;
+    --green:#46C78A; --red:#FF7777; --input:#101010; --input-line:#3A3A3A; --done-bg:#183626; --done-line:#43B879; --done-text:#A9EFC5; --lock-bg:#16261D;
   }
 }
 :root[data-theme="dark"]{
@@ -261,16 +262,16 @@ body.foco #toast{ bottom:calc(130px + env(safe-area-inset-bottom,0px)); }
 @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
 /* ===== visual B: títulos condensados em itálico, ícones e cartões com foto ===== */
 :root{ --fd:"Barlow Condensed","Arial Narrow",system-ui,sans-serif; }
-h1,h2{ font-family:var(--fd); font-style:italic; font-weight:800; text-transform:uppercase; letter-spacing:.01em; }
+h1,h2{ font-family:var(--fd); font-style:normal; font-weight:800; text-transform:none; letter-spacing:.01em; }
 h2{ font-size:25px; }
 .hero h1{ font-size:34px; font-weight:800; }
 .brand{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:25px; letter-spacing:.02em; }
-.cta{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:21px; letter-spacing:.05em; text-transform:uppercase; min-height:54px; display:flex; align-items:center; justify-content:center; gap:10px; }
+.cta{ font-family:var(--fd); font-style:normal; font-weight:800; font-size:20px; letter-spacing:.08em; text-transform:uppercase; min-height:54px; display:flex; align-items:center; justify-content:center; gap:10px; }
 .cta svg{ width:18px; height:18px; fill:currentColor; }
 .saud{ display:flex; align-items:center; gap:12px; min-width:0; }
-.avatar{ width:46px; height:46px; border-radius:50%; background:var(--tile); border:2px solid var(--orange); color:var(--peach); display:flex; align-items:center; justify-content:center; font-family:var(--fd); font-style:italic; font-weight:800; font-size:22px; flex-shrink:0; text-transform:uppercase; }
+.avatar{ width:48px; height:48px; border-radius:50%; background:#262626; border:2px solid var(--orange); color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-family:var(--fd); font-style:normal; font-weight:800; font-size:22px; flex-shrink:0; text-transform:uppercase; }
 .saud .ola{ font-size:13px; color:var(--muted); }
-.saud .nome{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:28px; line-height:1; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.saud .nome{ font-family:var(--fd); font-style:normal; font-weight:800; font-size:30px; line-height:1; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .destaque{ position:relative; height:150px; border-radius:22px; border:1px solid var(--line); background:var(--panel) center/cover no-repeat; overflow:hidden; display:flex; align-items:flex-end; padding:16px; margin-bottom:12px; }
 .destaque .deco{ position:absolute; right:-18px; top:-14px; width:170px; height:170px; stroke:var(--line); fill:none; stroke-width:1.6; stroke-linecap:round; }
 .destaque strong{ position:relative; font-family:var(--fd); font-style:italic; font-weight:800; font-size:27px; line-height:1.05; color:var(--orange); text-transform:uppercase; }
@@ -288,26 +289,55 @@ h2{ font-size:25px; }
 .thumb svg{ width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:1.6; }
 .thumb.p{ width:56px; height:56px; border-radius:12px; }
 .thumb.p svg{ width:20px; height:20px; }
-.hoje .nm{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:27px; line-height:1; text-transform:uppercase; }
+.hoje .nm{ font-family:var(--fd); font-style:normal; font-weight:800; font-size:26px; line-height:1; }
 .reg{ font-size:13px; font-weight:600; color:var(--peach); }
 .meta{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); }
 .meta svg{ width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .prox{ display:flex; align-items:center; gap:12px; padding:8px; background:var(--panel); border:1px solid var(--line); border-radius:16px; margin-bottom:8px; width:100%; text-align:left; color:var(--text); min-height:72px; }
 .prox .nm{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:20px; line-height:1; text-transform:uppercase; }
 .prox .ordem{ font-size:12px; color:var(--muted); padding-right:4px; }
-/* boas-vindas: sempre escuro, por cima da foto de abertura */
-.bv{ min-height:calc(100dvh - 32px); display:flex; flex-direction:column; justify-content:space-between; gap:28px; background:#161616 center/cover no-repeat; border-radius:26px; overflow:hidden; padding-top:64px; color:#F4F4F4; }
-.bv-topo{ display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; padding:0 16px; }
-.bv-logo{ width:88px; height:88px; border-radius:24px; background:#101010; border:3px solid #FF6900; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#FF6900; }
-.bv-logo svg{ width:34px; height:20px; stroke:currentColor; fill:none; stroke-width:2.4; stroke-linecap:round; }
-.bv-logo b{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:32px; line-height:1; }
-.bv-marca{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:46px; line-height:1; text-transform:uppercase; }
-.bv-marca span{ color:#FF6900; }
-.bv-tag{ font-size:11px; font-weight:600; letter-spacing:.18em; color:#D4D4D4; }
-.bv-base{ background:#101010; border-top:1px solid #2A2A2A; border-radius:26px 26px 0 0; padding:24px 20px 26px; display:flex; flex-direction:column; gap:12px; }
-.bv-base p{ margin:0; font-size:16px; line-height:1.5; color:#E4E4E4; }
-.bv .btn.ghost{ background:transparent; border:1px solid #5A5A5A; color:#F4F4F4; }
-.bv .lnk{ color:#F5A486; align-self:center; }
+/* ===== versão C (aprovada): fiel às referências ===== */
+.btn.cta{ background:#E85D00; color:#FFFFFF; }
+.btn.ghost.cta{ background:transparent; border:1.5px solid #6A6A6A; color:#FFFFFF; }
+.sino{ width:44px; height:44px; border-radius:22px; position:relative; display:flex; align-items:center; justify-content:center; color:var(--text); background:transparent; flex-shrink:0; }
+.sino svg{ width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.sino .ponto{ position:absolute; top:9px; right:10px; width:9px; height:9px; border-radius:5px; background:var(--orange); border:2px solid var(--bg); }
+.banner{ display:block; width:100%; height:150px; object-fit:cover; object-position:40% 50%; border-radius:18px; border:1px solid var(--line); margin-bottom:12px; }
+.tile svg{ width:24px; height:24px; }
+.titulo-sec h2{ font-size:22px; letter-spacing:.04em; }
+img.thumb{ object-fit:cover; display:block; }
+.hoje .thumb{ width:124px; height:104px; border-radius:12px; }
+.thumb.p{ width:64px; height:48px; border-radius:10px; }
+h2.sub{ font-size:21px; margin:22px 0 10px; }
+.lista-prox{ background:var(--panel); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+.lista-prox .prox{ border:0; border-bottom:1px solid #222222; border-radius:0; margin:0; background:transparent; min-height:68px; padding:10px 12px; }
+.lista-prox .prox:last-child{ border-bottom:0; }
+.prox .nm2{ font-weight:700; font-size:15px; }
+.prox .dia{ font-size:13px; color:var(--muted); padding-right:2px; }
+.aviso-item{ display:flex; flex-direction:column; gap:3px; text-align:left; padding:12px; border:1px solid var(--line); border-radius:12px; background:var(--panel2); margin-top:8px; width:100%; color:var(--text); }
+.aviso-item small{ color:var(--muted); font-size:13px; }
+.player{ position:fixed; inset:0; z-index:60; background:rgba(0,0,0,.86); display:flex; align-items:center; justify-content:center; padding:16px; }
+.player-box{ background:var(--panel); border:1px solid var(--line); border-radius:18px; overflow:hidden; width:100%; max-width:640px; }
+.player-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; }
+.player-top strong{ font-family:var(--fd); font-size:22px; font-weight:800; }
+.player-video{ position:relative; width:100%; aspect-ratio:16/9; background:#000; }
+.player-video iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+.player-rodape{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; font-size:12px; color:var(--muted); }
+/* abertura: atleta em tela inteira (sempre escuro) */
+.bv{ position:relative; min-height:calc(100dvh - 28px); border-radius:26px; overflow:hidden; background:#1C1C1C 55% 0/cover no-repeat; color:#FFFFFF; display:flex; flex-direction:column; justify-content:space-between; gap:24px; }
+.bv::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:62%; background:linear-gradient(to top, rgba(8,8,8,.97) 55%, rgba(8,8,8,0)); pointer-events:none; }
+.bv-topo{ position:relative; z-index:1; padding:56px 16px 0; display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; }
+.bv-logo{ width:96px; height:96px; border-radius:24px; background:rgba(11,11,11,.85); border:3px solid #FF6A00; box-shadow:0 0 28px rgba(255,106,0,.45); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
+.bv-logo svg{ width:44px; height:22px; stroke:#FF6A00; fill:none; stroke-width:2.6; stroke-linecap:round; }
+.bv-logo b{ font-family:var(--fd); font-style:italic; font-weight:900; font-size:38px; line-height:.9; color:#FFFFFF; }
+.bv-marca{ font-family:var(--fd); font-style:italic; font-weight:900; font-size:44px; line-height:1; color:#FFFFFF; text-transform:uppercase; }
+.bv-tag{ font-size:10px; font-weight:600; letter-spacing:.22em; color:#E8E8E8; }
+.bv-base{ position:relative; z-index:1; padding:0 22px 26px; display:flex; flex-direction:column; gap:12px; }
+.bv-frase{ display:flex; gap:12px; margin-bottom:6px; }
+.bv-frase i{ width:4px; border-radius:2px; background:#FF6A00; flex-shrink:0; }
+.bv-frase p{ margin:0; font-size:16px; line-height:1.45; color:#F2F2F2; }
+.bv .btn.ghost.cta{ background:rgba(11,11,11,.6); }
+.bv .lnk{ color:#E8E8E8; align-self:center; }
 .bv .aviso,.bv .alerta{ color:#F4F4F4; }
 </style>
 </head>
@@ -319,8 +349,8 @@ h2{ font-size:25px; }
 <nav class="bottom" id="nav" aria-label="Seções do app"><div class="nav">
   <button data-go="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg>Início</button>
   <button data-go="workouts"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6v12M17.5 6v12M3 9v6M21 9v6M6.5 12h11"/></svg>Treinos</button>
-  <button data-go="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>Evolução</button>
-  <button data-go="library"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H20v15H5.5A1.5 1.5 0 0 0 4 19.5zM4 19.5A1.5 1.5 0 0 0 5.5 21H20"/></svg>Biblioteca</button>
+  <button data-go="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/></svg>Evolução</button>
+  <button data-go="history"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
   <button data-go="profile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Perfil</button>
 </div></nav>
 <div id="timer" hidden>
@@ -336,7 +366,7 @@ h2{ font-size:25px; }
 'use strict';
 
 /* ================= Programas (dados, não código) ================= */
-const VERSAO_APP = '4.3';
+const VERSAO_APP = '4.4';
 /* o mesmo arquivo serve ao endereço oficial e ao de teste: cada um usa o seu banco */
 const AMBIENTES = {
   producao: { url: 'https://gspcitfcvypdchovnhve.supabase.co', chave: 'sb_publishable_VkL080hE9jt4hm_mdt4-Bg_0S3CXDV4' },
@@ -911,9 +941,9 @@ function vAuth() {
   const a = S.auth, aviso = (a.erro ? `<p class="aviso" style="margin-top:12px">${esc(a.erro)}</p>` : '') + (a.msg ? `<p class="alerta">${esc(a.msg)}</p>` : '');
   const caixa = (titulo, sub, corpo) => `<div class="card" style="max-width:440px;margin:10px auto">${a.estado === 'fora' ? `<button class="lnk" style="margin:0 0 6px;padding:0" data-a="auth-tela" data-t="boasvindas">← Voltar</button>` : ''}<div class="eyebrow">Sua conta</div><h2 style="font-size:25px;margin:6px 0 4px">${titulo}</h2><p class="muted">${sub}</p>${corpo}${aviso}</div>`;
   if (a.estado === 'carregando') return caixa('Carregando…', 'Conferindo a sua conta.', '');
-  if (a.tela === 'boasvindas') return `<div class="bv"><div class="bv-topo"><span class="bv-logo" aria-hidden="true">${ICO.logo}<b>MT</b></span><div class="bv-marca">Meu <span>Treino</span></div><div class="bv-tag">SEU DESEMPENHO, SUA EVOLUÇÃO</div>${seloTeste()}</div>
-    <div class="bv-base"><p>Organize seus treinos, registre cada carga e acompanhe a sua evolução.</p>${aviso}
-      <button class="btn full cta" data-a="auth-tela" data-t="entrar">Entrar</button><button class="btn full ghost cta" data-a="auth-tela" data-t="criar">Criar conta</button>
+  if (a.tela === 'boasvindas') return `<div class="bv"${FOTOS.atleta ? ` style="background-image:url('${FOTOS.atleta}')"` : ''}><div class="bv-topo"><span class="bv-logo" aria-hidden="true">${ICO.logo}<b>MT</b></span><div class="bv-marca">Meu Treino</div><div class="bv-tag">SEU TREINO, SUA EVOLUÇÃO</div>${seloTeste()}</div>
+    <div class="bv-base"><div class="bv-frase"><i aria-hidden="true"></i><p>Organize seus treinos, registre seus resultados e evolua com inteligência.</p></div>${aviso}
+      <button class="btn full cta" data-a="auth-tela" data-t="entrar">Entrar ${ICO.seta}</button><button class="btn full ghost cta" data-a="auth-tela" data-t="criar">Criar conta</button>
       <button class="lnk" data-a="auth-tela" data-t="esqueci">Esqueci minha senha</button></div></div>`;
   if (a.tela === 'criar') return caixa('Criar conta', 'Seus treinos ficam salvos na sua conta e aparecem em qualquer aparelho.', `<form data-form="auth-criar" class="fields" style="margin-top:12px">
     <div class="field larga"><label for="a-nome">Nome</label><input id="a-nome" autocomplete="given-name" maxlength="60" required></div>
@@ -951,7 +981,7 @@ function vConsent() {
 /* ================= telas ================= */
 const app = $('#app');
 const precisaCadastro = () => S.modo !== 'conectando' && !S.docs.perfil && !S.pularOnb && !validas().length && !S.atual;
-const PAGINAS = { home: ['inicio', ''], workouts: ['treinos', 'Meus treinos'], history: ['historico', 'Histórico'], session: ['sessao', ''], progress: ['evolucao', 'Evolução'], library: ['biblioteca', 'Biblioteca'], assistant: ['assistente', 'Assistente'], profile: ['perfil', 'Perfil'], recomecar: ['recomecar', 'Começar do zero'], onboarding: ['cadastro', ''] };
+const PAGINAS = { home: ['inicio', ''], workouts: ['treinos', 'Meus treinos'], history: ['historico', 'Agenda'], session: ['sessao', ''], progress: ['evolucao', 'Evolução'], library: ['biblioteca', 'Biblioteca'], assistant: ['assistente', 'Assistente'], profile: ['perfil', 'Perfil'], recomecar: ['recomecar', 'Começar do zero'], onboarding: ['cadastro', ''] };
 const HASH_PAGINA = Object.fromEntries(Object.entries(PAGINAS).map(([k, v]) => [v[0], k]));
 const pilha = [];
 let navegando = false;
@@ -959,8 +989,9 @@ const seloTeste = () => (AMBIENTE === 'teste' ? `<span class="pill" style="backg
 function cabecalho(page) {
   if (page === 'home') {
     const nome = ((perfil().nome || (S.auth.user && S.auth.user.user_metadata && S.auth.user.user_metadata.nome) || '').trim().split(/\s+/)[0]) || '';
-    const esq = nome ? `<div class="saud"><div class="avatar" aria-hidden="true">${esc(nome[0])}</div><div style="min-width:0"><div class="ola">Bom treino,</div><div class="nome">${esc(nome)}</div></div></div>` : `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Seu desempenho, sua evolução</div></div>`;
-    return esq + (seloTeste() || `<button class="btn ghost small" data-go="history">Histórico</button>`);
+    const esq = nome ? `<div class="saud"><div class="avatar" aria-hidden="true">${esc(nome[0])}</div><div style="min-width:0"><div class="ola">Bom treino,</div><div class="nome">${esc(nome)}</div></div></div>` : `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Seu treino, sua evolução</div></div>`;
+    const n = avisos().length;
+    return esq + `<div class="row" style="gap:6px;flex-wrap:nowrap">${seloTeste()}<button class="sino" data-a="avisos" aria-label="Avisos${n ? ` (${n})` : ''}">${ICO.sino}${n ? '<span class="ponto"></span>' : ''}</button></div>`;
   }
   if (page === 'onboarding') return `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Primeiro acesso</div></div>`;
   const titulo = page === 'session' && S.atual ? `Treino ${esc(S.atual.treino)}` : PAGINAS[page][1];
@@ -969,7 +1000,7 @@ function cabecalho(page) {
 }
 function render() {
   if (S.auth.estado !== 'dentro' || !S.consentido) {
-    $('#top').innerHTML = `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Seu desempenho, sua evolução</div></div>${seloTeste()}`;
+    $('#top').innerHTML = `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Seu treino, sua evolução</div></div>${seloTeste()}`;
     app.innerHTML = S.auth.estado !== 'dentro' ? vAuth() : vConsent();
     document.body.classList.add('foco'); $('#nav').hidden = true;
     $('#top').hidden = S.auth.estado === 'fora' && S.auth.tela === 'boasvindas';
@@ -1017,25 +1048,34 @@ const duracaoTxt = () => { const m = /(\d+)/.exec(prog().duracao || ''); return 
 /* minutos de uma sessão salva (ignora sessões sem fim ou esquecidas abertas) */
 const minutosSessao = s => { const m = s.fim && s.inicio ? (ms(s.fim) - ms(s.inicio)) / 60000 : 0; return m > 0 && m < 240 ? Math.round(m) : 0; };
 function cardHoje(t, r) {
-  const d = treinoDef(t) || {}, i = infoTreino(t), aviso = !r && avisoRecuperacao(t);
+  const i = infoTreino(t), aviso = !r && avisoRecuperacao(t);
   const min = r ? Math.max(0, Math.floor((Date.now() - ms(r.inicio)) / 60000)) : 0;
-  return `<div class="hoje"><div class="linha"><span class="thumb" aria-hidden="true">${ICON_CAM}</span>
-    <div style="min-width:0;display:flex;flex-direction:column;gap:6px"><span class="nm">Treino ${esc(t)}${d.nome ? ` — ${esc(d.nome)}` : ''}</span><span class="reg">${esc(gruposTreino(t))}</span>
-      <span class="meta">${ICO.relogio}${r ? `${min} min em andamento` : esc(duracaoTxt())}</span><span class="meta">${ICO.camadas}${i.n} exercícios · ${i.series} séries</span></div></div>
+  return `<div class="hoje"><div class="linha">${fotoTreino(t)}
+    <div style="min-width:0;display:flex;flex-direction:column;gap:6px;justify-content:center"><span class="nm">Treino ${esc(t)}</span><span class="reg">${esc(gruposTreino(t).replace(/ · /g, ' • '))}</span>
+      <span class="meta">${ICO.relogio}${r ? `${min} min em andamento` : esc(duracaoTxt())}</span><span class="meta">${ICO.lista}${i.n} exercícios</span></div></div>
     ${aviso ? `<p class="aviso" style="margin:0">${esc(aviso)}</p>` : ''}
-    ${r ? `<button class="btn full cta" data-a="continuar">${ICO.play}Continuar treino</button>` : `<button class="btn full cta" data-a="iniciar" data-t="${t}">${ICO.play}Iniciar treino</button>`}</div>`;
+    ${r ? `<button class="btn full cta" data-a="continuar">${ICO.playLinha}Continuar treino</button>` : `<button class="btn full cta" data-a="iniciar" data-t="${t}">${ICO.playLinha}Iniciar treino</button>`}</div>`;
+}
+function cardHojeLinha() {
+  const r = rascunho(), t = r ? r.treino : proximoTreino();
+  return `<button class="prox" style="border:0;border-radius:0;margin:0;background:transparent" data-a="${r ? 'continuar' : 'iniciar'}" data-t="${t}">${fotoTreino(t, 'p')}<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><span class="nm2">Treino ${esc(t)} · ${r ? 'em andamento' : 'próximo'}</span><span class="reg">${esc(gruposTreino(t).replace(/ · /g, ' • '))}</span></span><span class="dia">${esc(diaSugerido(t))}</span></button>`;
+}
+function listaProximos(t) {
+  const ord = prog().ordem, k = ord.indexOf(t), seq = k < 0 ? ord : ord.slice(k + 1).concat(ord.slice(0, k));
+  return seq.length ? `<div class="lista-prox">${seq.map(x => `<button class="prox" data-go="workouts">${fotoTreino(x, 'p')}<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><span class="nm2">Treino ${esc(x)}</span><span class="reg">${esc(gruposTreino(x).replace(/ · /g, ' • '))}</span></span><span class="dia">${esc(diaSugerido(x))}</span></button>`).join('')}</div>` : '';
 }
 function vHome() {
   const p = perfil(), r = rascunho(), P = prog(), t = r ? r.treino : proximoTreino();
   const agora = Date.now(), s7 = validas().filter(s => ms(s.inicio) >= agora - 7 * 864e5), s28 = validas().filter(s => ms(s.inicio) >= agora - 28 * 864e5);
   const consist = Math.min(100, Math.round(s28.length / (P.ordem.length * 4) * 100));
   const tile = (ico, valor, rot) => `<div class="tile">${ico}<b>${valor}</b><span>${rot}</span></div>`;
-  let h = `<div class="destaque"><svg class="deco" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7v10M3 9v6M18 7v10M21 9v6M6 12h12"/></svg><strong>${r ? 'Bora terminar o treino?' : 'Vamos evoluir hoje?'}</strong></div>`;
-  h += `<div class="tiles">${tile(ICO.calendario, `${s7.length}/${P.ordem.length}`, 'treinos na semana')}${tile(ICO.check, s7.reduce((n, s) => n + seriesFeitas(s), 0), 'séries na semana')}${tile(ICO.relogio, s7.reduce((n, s) => n + minutosSessao(s), 0), 'minutos na semana')}${tile(ICO.alvo, consist + '%', 'consistência em 4 semanas')}</div>`;
+  let h = FOTOS.halteres ? `<img class="banner" src="${FOTOS.halteres}" alt="Halteres na prateleira de uma academia com luz laranja">`
+    : `<div class="destaque"><svg class="deco" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7v10M3 9v6M18 7v10M21 9v6M6 12h12"/></svg><strong>${r ? 'Bora terminar o treino?' : 'Vamos evoluir hoje?'}</strong></div>`;
+  h += `<div class="tiles">${tile(ICO.calendario, s7.length, 'Treinos na semana')}${tile(ICO.check, s7.reduce((n, s) => n + seriesFeitas(s), 0), 'Séries concluídas')}${tile(ICO.cronometro, s7.reduce((n, s) => n + minutosSessao(s), 0), 'Minutos treinados')}${tile(ICO.barras, consist + '%', 'Consistência')}</div>`;
   h += `<p class="smalltxt" id="status" style="margin:10px 2px 0">${esc(statusTexto())}</p>`;
-  h += `<div class="titulo-sec">${ICO.haltere}<h2>${r ? 'Treino em andamento' : 'Treino de hoje'}</h2></div>` + cardHoje(t, r);
-  const ord = P.ordem, k = ord.indexOf(t), seq = k < 0 ? ord : ord.slice(k + 1).concat(ord.slice(0, k));
-  if (seq.length) h += `<div class="titulo-sec"><h2>Próximos treinos</h2></div>` + seq.map((x, n) => `<button class="prox" data-go="workouts"><span class="thumb p" aria-hidden="true">${ICON_CAM}</span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><span class="nm">Treino ${esc(x)}</span><span class="reg">${esc(gruposTreino(x))}</span></span><span class="ordem">${n + 2}º</span></button>`).join('');
+  h += `<div class="titulo-sec">${ICO.haltere}<h2>${r ? 'TREINO EM ANDAMENTO' : 'TREINO DE HOJE'}</h2></div>` + cardHoje(t, r);
+  const prox = listaProximos(t);
+  if (prox) h += `<h2 class="sub">Próximos Treinos</h2>` + prox;
   const desde = agora - 7 * 864e5, ss = s7;
   const ult = reg => { const s = validas().find(x => regioesSessao(x).includes(reg)); return s ? tempoDesde(ms(s.fim || s.inicio)) : 'nenhum ainda'; };
   h += `<div class="card" style="margin-top:14px"><div class="row between"><h3 style="margin:0">Volume da semana</h3><span class="pill">${ss.length} de ${P.ordem.length} treinos</span></div>
@@ -1052,7 +1092,7 @@ function vHome() {
 
 function vWorkouts() {
   const P = prog();
-  let h = `<div class="eyebrow">Plano de treinamento</div><h2>Meus treinos</h2>
+  let h = `<div class="row between" style="flex-wrap:nowrap"><div><div class="eyebrow">Plano de treinamento</div><h2>Meus treinos</h2></div><button class="btn ghost small" data-go="library">Biblioteca</button></div>
     <p class="muted">Sem calendário fixo: faça o próximo treino quando tiver disponibilidade e estiver recuperado. A sequência avança após concluir e salvar cada sessão.${P.ordem.length === 4 ? ' Sugestão: segunda, terça, quarta e fim de semana.' : ''}</p>`;
   const r = rascunho();
   if (r) h += `<div class="sectionhead" style="margin-top:4px"><h2>Treino em andamento</h2></div>` + cardAndamento(r) + `<p class="smalltxt">Termine ou descarte o treino em andamento para começar outro.</p>`;
@@ -1104,12 +1144,58 @@ function calendario() {
 }
 function vHistory() {
   const ss = validas();
-  return `<div class="eyebrow">Registros completos</div><h2>Histórico de treinos</h2><p class="muted">Toque em um dia do calendário ou em uma sessão para abrir todos os detalhes.</p>`
+  const pr = listaProximos(rascunho() ? rascunho().treino : proximoTreino());
+  return `<h2>Agenda</h2><p class="muted">Os próximos treinos da sequência e tudo o que você já treinou. Toque em um dia do calendário ou em uma sessão para ver os detalhes.</p>`
+    + `<div class="titulo-sec" style="margin-top:6px">${ICO.haltere}<h2>A SEGUIR</h2></div>` + `<div class="hoje" style="padding:0;overflow:hidden;margin-bottom:6px">${cardHojeLinha()}</div>` + pr
+    + `<h2 class="sub">Treinos feitos</h2>`
     + calendario() + (ss.length ? ss.map(entradaHistorico).join('') : `<div class="card">Nenhum treino registrado ainda.</div>`);
 }
 
 /* ----- sessão ----- */
 function minutosDecorridos() { return S.atual ? Math.max(0, Math.floor((Date.now() - ms(S.atual.inicio)) / 60000)) : 0; }
+const FOTOS = window.FOTOS || {};
+const FOTO_TREINO = { A: 'supino', B: 'legpress', C: 'puxada', D: 'flexora' };
+const ALT_FOTO = { supino: 'Atleta fazendo supino inclinado', legpress: 'Atleta no leg press', puxada: 'Atleta na puxada alta', flexora: 'Atleta na mesa flexora' };
+const fotoTreino = (t, cls) => { const k = FOTO_TREINO[t]; return k && FOTOS[k] ? `<img class="thumb ${cls || ''}" src="${FOTOS[k]}" alt="${ALT_FOTO[k]}" loading="lazy">` : `<span class="thumb ${cls || ''}" aria-hidden="true">${ICON_CAM}</span>`; };
+const DIAS_SUG = { principal: { A: 'Seg', B: 'Ter', C: 'Qua', D: 'Sáb' }, corpo: { A: 'Seg', B: 'Qua', C: 'Sex' }, essencial: { A: 'Seg', B: 'Qui' } };
+const diaSugerido = t => ((DIAS_SUG[progChave()] || {})[t] || '');
+/* vídeo dentro do app: um vídeo escolhido por exercício (piloto) ou o link que a pessoa fixou na Biblioteca */
+const VIDEOS_PADRAO = { supino_inclinado: 'bZtXNt7gbPY' };
+const idYoutube = url => { const m = String(url || '').match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([A-Za-z0-9_-]{11})/); return m ? m[1] : null; };
+const videoDe = id => idYoutube(midia().videos[id]) || VIDEOS_PADRAO[id] || null;
+function abrirVideo(exId) {
+  const vid = videoDe(exId); if (!vid) return;
+  fecharVideo();
+  const el = document.createElement('div');
+  el.className = 'player'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Vídeo: ' + nomeEx(exId));
+  el.innerHTML = `<div class="player-box"><div class="player-top"><strong>${esc(nomeEx(exId))}</strong><button class="btn secondary small" data-fechar-video aria-label="Fechar vídeo">✕ Fechar</button></div>
+    <div class="player-video"><iframe src="https://www.youtube-nocookie.com/embed/${vid}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="Vídeo de execução: ${esc(nomeEx(exId))}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+    <div class="player-rodape"><span>Vídeo do YouTube · precisa de internet</span><a href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener">Abrir no YouTube</a></div></div>`;
+  el.addEventListener('click', ev => { if (ev.target === el || ev.target.closest('[data-fechar-video]')) fecharVideo(); });
+  document.body.appendChild(el);
+  const bt = el.querySelector('[data-fechar-video]'); if (bt) bt.focus();
+}
+function fecharVideo() { document.querySelectorAll('.player').forEach(p => p.remove()); }
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape') fecharVideo(); });
+/* avisos do sino */
+function avisos() {
+  const l = [], r = rascunho(), agora = Date.now();
+  if (r) l.push({ t: 'Treino em andamento', d: `Treino ${r.treino} começou ${tempoDesde(ms(r.inicio))}.`, acao: 'continuar' });
+  if (S.pend.size) l.push({ t: 'Aguardando conexão', d: `${S.pend.size} ${S.pend.size === 1 ? 'registro será enviado' : 'registros serão enviados'} quando a internet voltar.` });
+  const ult = validas()[0];
+  if (ult) { const dias = Math.floor((agora - ms(ult.fim || ult.inicio)) / 864e5); if (dias >= 4) l.push({ t: 'Hora de voltar', d: `Seu último treino foi há ${dias} dias.`, acao: 'go:workouts' }); }
+  const m = ultimaCom('peso');
+  if (!m || agora - ms(m.data) > 30 * 864e5) l.push({ t: 'Nova medição', d: m ? `Última medição em ${dataISO(m.data)}. Registre peso e medidas na Evolução.` : 'Registre seu peso e suas medidas na Evolução.', acao: 'go:progress' });
+  return l;
+}
+async function mostrarAvisos() {
+  const l = avisos();
+  const corpo = l.length ? l.map(a => a.acao ? `<button class="aviso-item" data-r="${a.acao}"><strong>${esc(a.t)}</strong><small>${esc(a.d)}</small></button>` : `<div class="aviso-item"><strong>${esc(a.t)}</strong><small>${esc(a.d)}</small></div>`).join('') : '<p class="muted" style="margin:10px 0 0">Nenhum aviso agora.</p>';
+  const r = await modal(`<h3 style="margin:0">Avisos</h3><div style="text-align:left">${corpo}</div>`, [['Fechar', '0', 'secondary']]);
+  if (!r || r === '0') return;
+  if (r === 'continuar') { if (!S.atual) { const x = rascunhoNuvem(); if (!x) return; S.atual = normalizarAtual(clone(x)); LS.set('mt_atual', S.atual); } ir('session'); manterTelaLigada(); return; }
+  if (r.startsWith('go:')) ir(r.slice(3));
+}
 const ICO = {
   relogio: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   camadas: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>',
@@ -1118,7 +1204,13 @@ const ICO = {
   calendario: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>',
   alvo: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>',
-  logo: '<svg viewBox="0 0 24 14" aria-hidden="true"><path d="M6 2v10M3 4v6M18 2v10M21 4v6M6 7h12"/></svg>'
+  logo: '<svg viewBox="0 0 30 14" aria-hidden="true"><path d="M7 2v10M3.5 4v6M23 2v10M26.5 4v6M7 7h16"/></svg>',
+  sino: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>',
+  barras: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/></svg>',
+  cronometro: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg>',
+  lista: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>',
+  playLinha: '<svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.4;stroke-linejoin:round"><path d="M7 4v16l13-8z"/></svg>',
+  seta: '<svg viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
 };
 const ICON_CAM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 function fotoEx(id) {
@@ -1136,7 +1228,7 @@ function cardEx(id) {
     <div class="ex-topo">${fotoEx(id)}<div class="ex-info">
       <div class="ex-cab"><div class="exercise-title">${esc(d.nome)}</div><span class="ex-cont" data-cont>${feitos}/${e.sets.length}</span></div>
       <div class="exercise-meta" style="margin-bottom:0">${p.series} séries · ${p.min}–${p.max} reps · descanso ${mmss(p.rest)}<br>${esc(d.g.join(', '))}${d.equip ? ' · ' + esc(d.equip.toLowerCase()) : ''}</div>
-      <div class="row" style="gap:6px"><a class="btn-video" href="${esc(linkVideo(id))}" target="_blank" rel="noopener">▶ Ver vídeo</a><button class="btn-video" data-a="trocar" aria-label="Trocar ${esc(d.nome)} por outro exercício">⇄ Trocar</button></div>${e.orig ? `<div class="smalltxt" style="margin-top:4px">No lugar de: ${esc(nomeEx(e.orig))}</div>` : ''}</div></div>
+      <div class="row" style="gap:6px">${videoDe(id) ? `<button class="btn-video" data-a="video" data-ex-id="${id}">▶ Vídeo</button>` : `<a class="btn-video" href="${esc(linkVideo(id))}" target="_blank" rel="noopener">▶ Ver vídeo</a>`}<button class="btn-video" data-a="trocar" aria-label="Trocar ${esc(d.nome)} por outro exercício">⇄ Trocar</button></div>${e.orig ? `<div class="smalltxt" style="margin-top:4px">No lugar de: ${esc(nomeEx(e.orig))}</div>` : ''}</div></div>
     ${orig ? `<p class="nota-ini">${esc(orig)}</p>` : ''}
     <details class="lista-ex" style="margin-top:4px"><summary>Como executar</summary><p class="exercise-details" style="margin-top:4px">${esc(d.dica)}</p></details>
     ${ult ? `<p class="ultima">Última vez (${dataCurta(ult.d)}): ${esc(fmtSets(ult.sets))}${ult.dif ? `, ${ult.dif.toLowerCase()}` : ''}</p>` : ''}
@@ -1366,7 +1458,7 @@ function vLibrary() {
     return `<div class="card bib" data-busca="${esc(chave(id))}" ${q && !chave(id).includes(q) ? 'hidden' : ''}>
       <div class="ex-topo">${fotoEx(id)}<div class="ex-info"><strong>${esc(d.nome)}</strong>
       <div class="row" style="gap:6px;margin:6px 0">${ts.map(t => `<span class="pill">Treino ${t}</span>`).join('')}${ts.length ? '' : '<span class="pill" style="opacity:.7">Fora da ficha atual</span>'}</div>
-      <a class="btn-video" style="margin-top:0" href="${esc(linkVideo(id))}" target="_blank" rel="noopener">▶ ${midia().videos[id] ? 'Ver seu vídeo' : 'Ver vídeos curtos'}</a></div></div>
+      ${videoDe(id) ? `<button class="btn-video" style="margin-top:0" data-a="video" data-ex-id="${id}">▶ Ver vídeo aqui</button>` : `<a class="btn-video" style="margin-top:0" href="${esc(linkVideo(id))}" target="_blank" rel="noopener">▶ Ver vídeos curtos</a>`}</div></div>
       <div class="smalltxt">${esc(d.g.join(', '))} · ${esc(d.equip)} · ${d.series} × ${d.min}–${d.max} reps · descanso ${mmss(d.rest)}${(d.gi || []).length ? ` · também trabalha ${esc(d.gi.join(', ').toLowerCase())}` : ''}</div>
       <p class="exercise-details" style="margin-top:6px">${esc(d.dica)}</p>
       <details class="lista-ex"><summary>${midia().videos[id] ? 'Trocar o vídeo deste exercício' : 'Fixar um vídeo para este exercício'}</summary>
@@ -1833,6 +1925,8 @@ async function tratarClique(ev) {
       ir('session'); manterTelaLigada(); break;
     }
     case 'voltar': voltar(); break;
+    case 'video': abrirVideo(b.dataset.exId); break;
+    case 'avisos': mostrarAvisos(); break;
     case 'auth-tela': S.auth.tela = b.dataset.t; S.auth.erro = ''; S.auth.msg = ''; render(); break;
     case 'auth-sair': sairDaConta(); break;
     case 'trocar-senha': S.trocarSenha = !S.trocarSenha; render(); break;
