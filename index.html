@@ -11,7 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600;700;800;900&display=swap">
 <style>
 :root{
   color-scheme: light;
@@ -259,6 +259,56 @@ body.foco #toast{ bottom:calc(130px + env(safe-area-inset-bottom,0px)); }
   .barra-g{ grid-template-columns:100px 1fr 30px; }
 }
 @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+/* ===== visual B: títulos condensados em itálico, ícones e cartões com foto ===== */
+:root{ --fd:"Barlow Condensed","Arial Narrow",system-ui,sans-serif; }
+h1,h2{ font-family:var(--fd); font-style:italic; font-weight:800; text-transform:uppercase; letter-spacing:.01em; }
+h2{ font-size:25px; }
+.hero h1{ font-size:34px; font-weight:800; }
+.brand{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:25px; letter-spacing:.02em; }
+.cta{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:21px; letter-spacing:.05em; text-transform:uppercase; min-height:54px; display:flex; align-items:center; justify-content:center; gap:10px; }
+.cta svg{ width:18px; height:18px; fill:currentColor; }
+.saud{ display:flex; align-items:center; gap:12px; min-width:0; }
+.avatar{ width:46px; height:46px; border-radius:50%; background:var(--tile); border:2px solid var(--orange); color:var(--peach); display:flex; align-items:center; justify-content:center; font-family:var(--fd); font-style:italic; font-weight:800; font-size:22px; flex-shrink:0; text-transform:uppercase; }
+.saud .ola{ font-size:13px; color:var(--muted); }
+.saud .nome{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:28px; line-height:1; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.destaque{ position:relative; height:150px; border-radius:22px; border:1px solid var(--line); background:var(--panel) center/cover no-repeat; overflow:hidden; display:flex; align-items:flex-end; padding:16px; margin-bottom:12px; }
+.destaque .deco{ position:absolute; right:-18px; top:-14px; width:170px; height:170px; stroke:var(--line); fill:none; stroke-width:1.6; stroke-linecap:round; }
+.destaque strong{ position:relative; font-family:var(--fd); font-style:italic; font-weight:800; font-size:27px; line-height:1.05; color:var(--orange); text-transform:uppercase; }
+.tiles{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+.tile{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:11px 4px 9px; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center; }
+.tile svg,.ico{ width:20px; height:20px; stroke:var(--orange); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+.tile b{ font-family:var(--fd); font-weight:800; font-size:25px; line-height:1; font-variant-numeric:tabular-nums; }
+.tile span{ font-size:11px; line-height:1.25; color:var(--muted); }
+.titulo-sec{ display:flex; align-items:center; gap:8px; margin:22px 0 10px; }
+.titulo-sec h2{ margin:0; }
+.titulo-sec svg{ width:22px; height:22px; stroke:var(--orange); fill:none; stroke-width:2.4; stroke-linecap:round; }
+.hoje{ background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:12px; display:flex; flex-direction:column; gap:12px; }
+.hoje .linha{ display:flex; gap:14px; align-items:center; }
+.thumb{ width:96px; height:96px; flex-shrink:0; border-radius:14px; background:var(--panel2) center/cover no-repeat; display:flex; align-items:center; justify-content:center; color:var(--muted); }
+.thumb svg{ width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:1.6; }
+.thumb.p{ width:56px; height:56px; border-radius:12px; }
+.thumb.p svg{ width:20px; height:20px; }
+.hoje .nm{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:27px; line-height:1; text-transform:uppercase; }
+.reg{ font-size:13px; font-weight:600; color:var(--peach); }
+.meta{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); }
+.meta svg{ width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.prox{ display:flex; align-items:center; gap:12px; padding:8px; background:var(--panel); border:1px solid var(--line); border-radius:16px; margin-bottom:8px; width:100%; text-align:left; color:var(--text); min-height:72px; }
+.prox .nm{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:20px; line-height:1; text-transform:uppercase; }
+.prox .ordem{ font-size:12px; color:var(--muted); padding-right:4px; }
+/* boas-vindas: sempre escuro, por cima da foto de abertura */
+.bv{ min-height:calc(100dvh - 32px); display:flex; flex-direction:column; justify-content:space-between; gap:28px; background:#161616 center/cover no-repeat; border-radius:26px; overflow:hidden; padding-top:64px; color:#F4F4F4; }
+.bv-topo{ display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center; padding:0 16px; }
+.bv-logo{ width:88px; height:88px; border-radius:24px; background:#101010; border:3px solid #FF6900; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#FF6900; }
+.bv-logo svg{ width:34px; height:20px; stroke:currentColor; fill:none; stroke-width:2.4; stroke-linecap:round; }
+.bv-logo b{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:32px; line-height:1; }
+.bv-marca{ font-family:var(--fd); font-style:italic; font-weight:800; font-size:46px; line-height:1; text-transform:uppercase; }
+.bv-marca span{ color:#FF6900; }
+.bv-tag{ font-size:11px; font-weight:600; letter-spacing:.18em; color:#D4D4D4; }
+.bv-base{ background:#101010; border-top:1px solid #2A2A2A; border-radius:26px 26px 0 0; padding:24px 20px 26px; display:flex; flex-direction:column; gap:12px; }
+.bv-base p{ margin:0; font-size:16px; line-height:1.5; color:#E4E4E4; }
+.bv .btn.ghost{ background:transparent; border:1px solid #5A5A5A; color:#F4F4F4; }
+.bv .lnk{ color:#F5A486; align-self:center; }
+.bv .aviso,.bv .alerta{ color:#F4F4F4; }
 </style>
 </head>
 <body>
@@ -286,7 +336,7 @@ body.foco #toast{ bottom:calc(130px + env(safe-area-inset-bottom,0px)); }
 'use strict';
 
 /* ================= Programas (dados, não código) ================= */
-const VERSAO_APP = '4.2';
+const VERSAO_APP = '4.3';
 /* o mesmo arquivo serve ao endereço oficial e ao de teste: cada um usa o seu banco */
 const AMBIENTES = {
   producao: { url: 'https://gspcitfcvypdchovnhve.supabase.co', chave: 'sb_publishable_VkL080hE9jt4hm_mdt4-Bg_0S3CXDV4' },
@@ -419,7 +469,7 @@ function carregarDocs() { return LS.get('mt2_docs', {}) || {}; }
 function dadosLegados() { try { const d = JSON.parse(localStorage.getItem('mt2_docs') || 'null'); return d && typeof d === 'object' && Object.keys(d).length ? d : null; } catch (e) { return null; } }
 const S = {
   page: 'home', docs: {}, atual: null, pend: new Set(), apagados: new Set(),
-  auth: { estado: 'carregando', tela: 'entrar', msg: '', erro: '', email: '', user: null, papel: null }, consentido: false, trocarSenha: false,
+  auth: { estado: 'carregando', tela: 'boasvindas', msg: '', erro: '', email: '', user: null, papel: null }, consentido: false, trocarSenha: false,
   modo: 'conectando', busca: '', exForca: null, periodo: 14, pergunta: '', relVisivel: false,
   cal: null, diaSel: null, aberto: null, pularOnb: false, editarPerfil: false,
   ia: { texto: '', estado: 'idle', ctl: null, nota: '' }, fotoOk: false,
@@ -859,14 +909,18 @@ function sairLocal(msg) {
 }
 function vAuth() {
   const a = S.auth, aviso = (a.erro ? `<p class="aviso" style="margin-top:12px">${esc(a.erro)}</p>` : '') + (a.msg ? `<p class="alerta">${esc(a.msg)}</p>` : '');
-  const caixa = (titulo, sub, corpo) => `<div class="card" style="max-width:440px;margin:10px auto"><div class="eyebrow">Sua conta</div><h2 style="font-size:25px;margin:6px 0 4px">${titulo}</h2><p class="muted">${sub}</p>${corpo}${aviso}</div>`;
+  const caixa = (titulo, sub, corpo) => `<div class="card" style="max-width:440px;margin:10px auto">${a.estado === 'fora' ? `<button class="lnk" style="margin:0 0 6px;padding:0" data-a="auth-tela" data-t="boasvindas">← Voltar</button>` : ''}<div class="eyebrow">Sua conta</div><h2 style="font-size:25px;margin:6px 0 4px">${titulo}</h2><p class="muted">${sub}</p>${corpo}${aviso}</div>`;
   if (a.estado === 'carregando') return caixa('Carregando…', 'Conferindo a sua conta.', '');
+  if (a.tela === 'boasvindas') return `<div class="bv"><div class="bv-topo"><span class="bv-logo" aria-hidden="true">${ICO.logo}<b>MT</b></span><div class="bv-marca">Meu <span>Treino</span></div><div class="bv-tag">SEU DESEMPENHO, SUA EVOLUÇÃO</div>${seloTeste()}</div>
+    <div class="bv-base"><p>Organize seus treinos, registre cada carga e acompanhe a sua evolução.</p>${aviso}
+      <button class="btn full cta" data-a="auth-tela" data-t="entrar">Entrar</button><button class="btn full ghost cta" data-a="auth-tela" data-t="criar">Criar conta</button>
+      <button class="lnk" data-a="auth-tela" data-t="esqueci">Esqueci minha senha</button></div></div>`;
   if (a.tela === 'criar') return caixa('Criar conta', 'Seus treinos ficam salvos na sua conta e aparecem em qualquer aparelho.', `<form data-form="auth-criar" class="fields" style="margin-top:12px">
     <div class="field larga"><label for="a-nome">Nome</label><input id="a-nome" autocomplete="given-name" maxlength="60" required></div>
     <div class="field larga"><label for="a-email">E-mail</label><input id="a-email" type="email" autocomplete="email" inputmode="email" required value="${esc(a.email || '')}"></div>
     <div class="field"><label for="a-senha">Senha (mín. 8)</label><input id="a-senha" type="password" autocomplete="new-password" minlength="8" required></div>
     <div class="field"><label for="a-senha2">Repita a senha</label><input id="a-senha2" type="password" autocomplete="new-password" minlength="8" required></div>
-    <button class="btn full larga field" type="submit">Criar conta</button></form>
+    <button class="btn full larga field cta" type="submit">Criar conta</button></form>
     <button class="lnk" style="margin-top:8px" data-a="auth-tela" data-t="entrar">Já tenho conta</button>`);
   if (a.tela === 'esqueci') return caixa('Recuperar senha', 'Enviamos um link para você criar uma senha nova.', `<form data-form="auth-esqueci" style="margin-top:12px">
     <div class="field"><label for="a-email">E-mail da conta</label><input id="a-email" type="email" autocomplete="email" inputmode="email" required value="${esc(a.email || '')}"></div>
@@ -881,7 +935,7 @@ function vAuth() {
   return caixa('Entrar', 'Entre para ver seus treinos, cargas e evolução.', `<form data-form="auth-entrar" style="margin-top:12px">
     <div class="field"><label for="a-email">E-mail</label><input id="a-email" type="email" autocomplete="email" inputmode="email" required value="${esc(a.email || '')}"></div>
     <div class="field" style="margin-top:9px"><label for="a-senha">Senha</label><input id="a-senha" type="password" autocomplete="current-password" required></div>
-    <button class="btn full" type="submit" style="margin-top:12px">Entrar</button></form>
+    <button class="btn full cta" type="submit" style="margin-top:12px">Entrar</button></form>
     <div class="row between" style="margin-top:8px"><button class="lnk" data-a="auth-tela" data-t="criar">Criar conta</button><button class="lnk" data-a="auth-tela" data-t="esqueci">Esqueci minha senha</button></div>`);
 }
 function vConsent() {
@@ -903,7 +957,11 @@ const pilha = [];
 let navegando = false;
 const seloTeste = () => (AMBIENTE === 'teste' ? `<span class="pill" style="background:var(--red);color:#fff">Ambiente de teste</span>` : '');
 function cabecalho(page) {
-  if (page === 'home') return `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Seu desempenho, sua evolução</div></div>${seloTeste() || `<button class="btn ghost small" data-go="history">Histórico</button>`}`;
+  if (page === 'home') {
+    const nome = ((perfil().nome || (S.auth.user && S.auth.user.user_metadata && S.auth.user.user_metadata.nome) || '').trim().split(/\s+/)[0]) || '';
+    const esq = nome ? `<div class="saud"><div class="avatar" aria-hidden="true">${esc(nome[0])}</div><div style="min-width:0"><div class="ola">Bom treino,</div><div class="nome">${esc(nome)}</div></div></div>` : `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Seu desempenho, sua evolução</div></div>`;
+    return esq + (seloTeste() || `<button class="btn ghost small" data-go="history">Histórico</button>`);
+  }
   if (page === 'onboarding') return `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Primeiro acesso</div></div>`;
   const titulo = page === 'session' && S.atual ? `Treino ${esc(S.atual.treino)}` : PAGINAS[page][1];
   const info = page === 'session' && S.atual ? `<span class="info" id="hdr-info">${minutosDecorridos()} min</span>` : page === 'recomecar' ? `<span class="info">Passo ${S.rec.passo} de 3</span>` : '<span></span>';
@@ -914,8 +972,10 @@ function render() {
     $('#top').innerHTML = `<div><div class="brand">MEU <span>TREINO</span></div><div class="eyebrow">Seu desempenho, sua evolução</div></div>${seloTeste()}`;
     app.innerHTML = S.auth.estado !== 'dentro' ? vAuth() : vConsent();
     document.body.classList.add('foco'); $('#nav').hidden = true;
+    $('#top').hidden = S.auth.estado === 'fora' && S.auth.tela === 'boasvindas';
     return;
   }
+  $('#top').hidden = false;
   let page = S.page;
   if (page === 'session' && !S.atual) page = S.page = 'home';
   if (precisaCadastro()) page = 'onboarding';
@@ -950,35 +1010,43 @@ function cardAndamento(r) {
     <div class="smalltxt">Em andamento desde ${new Date(r.inicio).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}. Etapa: ${etapa}. ${f.ok} de ${f.total} séries validadas.</div></div></div>
     <div class="row" style="margin-top:12px"><button class="btn" style="flex:1" data-a="continuar">▶ Continuar</button><button class="btn secondary" data-a="descartar">Descartar</button></div></div>`;
 }
+const GRUPO_CURTO = { 'Ombro lateral': 'Ombros', 'Ombro posterior': 'Ombros', 'Ombro anterior': 'Ombros', 'Posterior de coxa': 'Posteriores' };
+const gruposTreino = t => [...new Set(itensTreino(t).map(it => (EX[it.id] ? GRUPO_CURTO[EX[it.id].g[0]] || EX[it.id].g[0] : null)).filter(Boolean))].slice(0, 4).join(' · ');
+const infoTreino = t => { const it = itensTreino(t); return { n: it.length, series: it.reduce((n, x) => n + prescricao(x.id, t).series, 0) }; };
+const duracaoTxt = () => { const m = /(\d+)/.exec(prog().duracao || ''); return m ? `~${m[1]} min` : ''; };
+/* minutos de uma sessão salva (ignora sessões sem fim ou esquecidas abertas) */
+const minutosSessao = s => { const m = s.fim && s.inicio ? (ms(s.fim) - ms(s.inicio)) / 60000 : 0; return m > 0 && m < 240 ? Math.round(m) : 0; };
+function cardHoje(t, r) {
+  const d = treinoDef(t) || {}, i = infoTreino(t), aviso = !r && avisoRecuperacao(t);
+  const min = r ? Math.max(0, Math.floor((Date.now() - ms(r.inicio)) / 60000)) : 0;
+  return `<div class="hoje"><div class="linha"><span class="thumb" aria-hidden="true">${ICON_CAM}</span>
+    <div style="min-width:0;display:flex;flex-direction:column;gap:6px"><span class="nm">Treino ${esc(t)}${d.nome ? ` — ${esc(d.nome)}` : ''}</span><span class="reg">${esc(gruposTreino(t))}</span>
+      <span class="meta">${ICO.relogio}${r ? `${min} min em andamento` : esc(duracaoTxt())}</span><span class="meta">${ICO.camadas}${i.n} exercícios · ${i.series} séries</span></div></div>
+    ${aviso ? `<p class="aviso" style="margin:0">${esc(aviso)}</p>` : ''}
+    ${r ? `<button class="btn full cta" data-a="continuar">${ICO.play}Continuar treino</button>` : `<button class="btn full cta" data-a="iniciar" data-t="${t}">${ICO.play}Iniciar treino</button>`}</div>`;
+}
 function vHome() {
-  const p = perfil(), nome = (p.nome || '').trim(), r = rascunho(), prox = proximoTreino();
-  const mp = ultimaCom('peso'), mg = ultimaCom('gordura'), mm = ultimaCom('muscular');
-  let h = `<div class="hero"><div class="eyebrow">Seu painel pessoal</div><h1>${nome ? `Olá, ${esc(nome)}.<br>` : ''}Vamos evoluir?</h1>
-    <p>Treino inteligente, histórico e acompanhamento em um só lugar.</p>
-    <div class="row">${r ? `<button class="btn" data-a="continuar">▶ Continuar treino ${esc(r.treino)}</button>` : `<button class="btn" data-a="iniciar" data-t="${prox}">▶ Iniciar próximo treino</button>`}<span class="pill">Plano flexível</span></div>
-    <p class="smalltxt" id="status" style="margin:12px 0 0">${esc(statusTexto())}</p></div>`;
-  h += `<div class="grid stats">
-    ${stat('Peso de referência', mp ? numBR1(mp.peso) + ' kg' : '—', mp ? 'Atualizado em ' + dataISO(mp.data) : 'Registre na Evolução')}
-    ${stat('Gordura corporal', mg ? numBR1(mg.gordura) + '%' : '—', mg ? 'Bioimpedância de ' + dataISO(mg.data) : 'Sem bioimpedância')}
-    ${stat('Massa muscular', mm ? numBR1(mm.muscular) + ' kg' : '—', mm ? 'Estimativa do exame' : 'Sem bioimpedância')}
-    ${stat('Treinos registrados', String(validas().length), 'Na sua conta')}</div>`;
-  if (!window.claude && !sb && validas().length && Date.now() - (LS.get('mt_backup_em', 0) || 0) > 14 * 864e5)
-    h += `<div class="card" style="margin-top:12px"><div class="row between"><div style="flex:1;min-width:0"><strong>Faça um backup</strong><div class="smalltxt">Seus treinos ficam só neste celular. Um arquivo de backup protege contra perda.</div></div><button class="btn small" data-a="backup">Baixar backup</button></div></div>`;
-  h += `<div class="sectionhead"><h2>${r ? 'Treino em andamento' : 'Seu próximo treino'}</h2><span class="pill">Flexível</span></div>`;
-  h += r ? cardAndamento(r) : cardTreino(prox, true);
-  const desde = Date.now() - 7 * 864e5, ss = validas().filter(s => ms(s.inicio) >= desde);
+  const p = perfil(), r = rascunho(), P = prog(), t = r ? r.treino : proximoTreino();
+  const agora = Date.now(), s7 = validas().filter(s => ms(s.inicio) >= agora - 7 * 864e5), s28 = validas().filter(s => ms(s.inicio) >= agora - 28 * 864e5);
+  const consist = Math.min(100, Math.round(s28.length / (P.ordem.length * 4) * 100));
+  const tile = (ico, valor, rot) => `<div class="tile">${ico}<b>${valor}</b><span>${rot}</span></div>`;
+  let h = `<div class="destaque"><svg class="deco" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7v10M3 9v6M18 7v10M21 9v6M6 12h12"/></svg><strong>${r ? 'Bora terminar o treino?' : 'Vamos evoluir hoje?'}</strong></div>`;
+  h += `<div class="tiles">${tile(ICO.calendario, `${s7.length}/${P.ordem.length}`, 'treinos na semana')}${tile(ICO.check, s7.reduce((n, s) => n + seriesFeitas(s), 0), 'séries na semana')}${tile(ICO.relogio, s7.reduce((n, s) => n + minutosSessao(s), 0), 'minutos na semana')}${tile(ICO.alvo, consist + '%', 'consistência em 4 semanas')}</div>`;
+  h += `<p class="smalltxt" id="status" style="margin:10px 2px 0">${esc(statusTexto())}</p>`;
+  h += `<div class="titulo-sec">${ICO.haltere}<h2>${r ? 'Treino em andamento' : 'Treino de hoje'}</h2></div>` + cardHoje(t, r);
+  const ord = P.ordem, k = ord.indexOf(t), seq = k < 0 ? ord : ord.slice(k + 1).concat(ord.slice(0, k));
+  if (seq.length) h += `<div class="titulo-sec"><h2>Próximos treinos</h2></div>` + seq.map((x, n) => `<button class="prox" data-go="workouts"><span class="thumb p" aria-hidden="true">${ICON_CAM}</span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><span class="nm">Treino ${esc(x)}</span><span class="reg">${esc(gruposTreino(x))}</span></span><span class="ordem">${n + 2}º</span></button>`).join('');
+  const desde = agora - 7 * 864e5, ss = s7;
   const ult = reg => { const s = validas().find(x => regioesSessao(x).includes(reg)); return s ? tempoDesde(ms(s.fim || s.inicio)) : 'nenhum ainda'; };
-  h += `<div class="card"><div class="row between"><h3 style="margin:0">Últimos 7 dias</h3><span class="pill">${ss.length} de ${prog().ordem.length} treinos</span></div>
+  h += `<div class="card" style="margin-top:14px"><div class="row between"><h3 style="margin:0">Volume da semana</h3><span class="pill">${ss.length} de ${P.ordem.length} treinos</span></div>
     <p class="smalltxt" style="margin-top:6px">${ss.reduce((n, s) => n + seriesFeitas(s), 0)} séries validadas. Último treino de cima: ${ult('sup')}. Último de pernas: ${ult('inf')}.</p>
     ${barras(volume(desde), GRUPOS_GRANDES)}<p class="smalltxt" style="margin-top:8px">A barra cheia equivale a ${META_SEMANA} séries na semana, a meta para hipertrofia.</p></div>`;
-  h += `<div class="sectionhead"><h2>Atalhos</h2></div><div class="grid">
-    ${atalho('workouts', '🏋️', 'Meus treinos', 'Fichas e execução')}${atalho('progress', '📈', 'Minha evolução', 'Cargas e indicadores')}
-    ${atalho('library', '🎬', 'Biblioteca', 'Exercícios e demonstrações')}${atalho('assistant', '✦', 'Assistente IA', 'Perguntas e análises')}</div>`;
+  h += `<button class="prox" data-go="assistant" style="margin-top:4px"><span class="thumb p" aria-hidden="true" style="font-size:22px;color:var(--orange)">✦</span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><strong>Assistente</strong><span class="smalltxt" style="margin:0">Relatório dos seus treinos para você ou para o treinador</span></span></button>`;
   const prazo = p.prazo || 8, primeira = doPrograma().slice(-1)[0];
-  const semana = primeira ? Math.min(prazo, Math.floor((Date.now() - ms(primeira.inicio)) / (7 * 864e5)) + 1) : null;
-  h += `<div class="card" style="margin-top:12px"><div class="row between"><h3 style="margin:0">Objetivo atual</h3><span class="pill">${semana ? `Semana ${semana} de ${prazo}` : `${prazo} semanas`}</span></div>
+  const semana = primeira ? Math.min(prazo, Math.floor((agora - ms(primeira.inicio)) / (7 * 864e5)) + 1) : null;
+  h += `<div class="card" style="margin-top:6px"><div class="row between"><h3 style="margin:0">Objetivo atual</h3><span class="pill">${semana ? `Semana ${semana} de ${prazo}` : `${prazo} semanas`}</span></div>
     <strong style="display:block;margin-top:6px">${esc(p.objetivo || 'Defina seu objetivo no perfil')}</strong>
-    <p class="smalltxt" style="margin-top:6px">Acompanhar peso, cintura, composição corporal, força e recuperação. As recomendações não substituem avaliação profissional.</p></div>`;
+    <p class="smalltxt" style="margin-top:6px">As recomendações não substituem avaliação profissional.</p></div>`;
   return h;
 }
 
@@ -1042,6 +1110,16 @@ function vHistory() {
 
 /* ----- sessão ----- */
 function minutosDecorridos() { return S.atual ? Math.max(0, Math.floor((Date.now() - ms(S.atual.inicio)) / 60000)) : 0; }
+const ICO = {
+  relogio: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  camadas: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>',
+  play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>',
+  haltere: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7v10M3 9v6M18 7v10M21 9v6M6 12h12"/></svg>',
+  calendario: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  check: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>',
+  alvo: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>',
+  logo: '<svg viewBox="0 0 24 14" aria-hidden="true"><path d="M6 2v10M3 4v6M18 2v10M21 4v6M6 7h12"/></svg>'
+};
 const ICON_CAM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 function fotoEx(id) {
   const f = midia().fotos[id];
